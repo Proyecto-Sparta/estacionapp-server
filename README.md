@@ -1,4 +1,4 @@
-# EstacionappServer
+# Estacionapp-Server
 
 To start your Phoenix app:
 
