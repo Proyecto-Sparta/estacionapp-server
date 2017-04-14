@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Proyecto-Sparta/estacionapp-server.svg?branch=master)](https://travis-ci.org/Proyecto-Sparta/estacionapp-server)
+
 # Estacionapp-Server
 
 To start your Phoenix app:
