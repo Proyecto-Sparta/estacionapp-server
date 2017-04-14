@@ -1,0 +1,12 @@
+language: elixir
+matrix:
+  include:
+    - otp_release: 19.0
+      elixir: 1.4.0
+      script: mix test
+sudo: false
+before_script:
+  - mix deps.get
+script:
+  - mix test
+  
