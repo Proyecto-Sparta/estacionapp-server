@@ -1,5 +1,5 @@
 defmodule EstacionappServer.MobileControllerTest do
-  use EstacionappServer.TestHelper
+  use EstacionappServer.ConnCase
 
   test "api is alive!" do
     conn = get("/status")

@@ -24,6 +24,10 @@ defmodule EstacionappServer.ConnCase do
 
       # The default endpoint for testing
       @endpoint EstacionappServer.Endpoint
+
+      def get(path) do
+        build_conn() |> get(path)
+      end
     end
   end
 
