@@ -9,9 +9,7 @@ defmodule EstacionappServer.AdapterCase do
   using do
     quote do
       alias EstacionappServer.MongoAdapter
-
-     
+           
     end
   end
-
 end

@@ -13,7 +13,7 @@ defmodule EstacionappServer.MongoAdapter do
      |> Enum.into(%{})     
      |> Map.delete(:child_spec)
      |> Map.delete(:start_link)
-     |> Enum.each(fn {name, arity } ->
+     |> Enum.each(fn {name, arity} ->
             case arity do
               5 -> def unquote(name)(f, s , t, opts \\ []), do: Mongo.unquote(name)(@pool, f, s, t, [unquote(@pool_handler) | opts])
               4 -> def unquote(name)(f, s,  opts \\ []), do: Mongo.unquote(name)(@pool, f, s, [unquote(@pool_handler) | opts])
