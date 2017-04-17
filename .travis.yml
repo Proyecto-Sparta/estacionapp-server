@@ -5,8 +5,11 @@ matrix:
       elixir: 1.4.0
       script: mix test
 sudo: false
+services:
+  - mongodb
 before_script:
   - mix deps.get
+  - sleep 10
 script:
   - mix test
   
