@@ -10,6 +10,7 @@ defmodule EstacionappServer do
     children = [
       # Start the endpoint when the application starts
       supervisor(EstacionappServer.Endpoint, []),
+      worker(Mongo, [[name: :estacionapp_pool, database: "estacionapp", pool: DBConnection.Poolboy, pool_size: 5]])
       # Start your own worker by calling: EstacionappServer.Worker.start_link(arg1, arg2, arg3)
       # worker(EstacionappServer.Worker, [arg1, arg2, arg3]),
     ]
