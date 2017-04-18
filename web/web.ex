@@ -19,6 +19,18 @@ defmodule EstacionappServer.Web do
   def model do
     quote do
       # Define common model functionality
+      alias EstacionappServer.MongoAdapter
+      use Ecto.Schema
+      import Ecto.Changeset
+
+      defp validate_unique(changeset, field, collection) do
+        validate_change(changeset, field, fn _, value ->
+          case MongoAdapter.count(collection, %{field => value}) do
+            {:ok, 0} -> []
+            _ -> [{field, "is already taken"}]
+          end
+        end)
+      end
     end
   end
 

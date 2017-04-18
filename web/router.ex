@@ -5,8 +5,18 @@ defmodule EstacionappServer.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :secure_api do
+    plug :accepts, ["json"]
+    plug Guardian.Plug.VerifyHeader
+  end
+
   scope "/", EstacionappServer do
     pipe_through :api
     get "/status", ServerController, :status
+  end
+
+  scope "/mobile", EstacionappServer do
+    pipe_through :api
+    post "/", MobileController, :create
   end
 end
