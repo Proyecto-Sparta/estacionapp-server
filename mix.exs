@@ -33,6 +33,8 @@ defmodule EstacionappServer.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:mongodb, ">= 0.0.0"},
-     {:poolboy, ">= 0.0.0"}]
+     {:poolboy, ">= 0.0.0"},
+     {:guardian, "~> 0.14"},
+     {:ecto, "~> 2.1"}]
   end
 end
