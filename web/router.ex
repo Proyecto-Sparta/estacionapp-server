@@ -7,7 +7,6 @@ defmodule EstacionappServer.Router do
 
   scope "/", EstacionappServer do
     pipe_through :api
-
-    get "/status", MobileController, :greet
+    get "/status", ServerController, :status
   end
 end

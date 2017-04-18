@@ -1,8 +1,8 @@
 defmodule EstacionappServer.MobileControllerTest do
   use EstacionappServer.ConnCase
 
-  test "api is alive!" do
+  test "server is on" do
     resp = get("/status")
-    assert json_response(resp, 200) == %{"status" => "Engaged"}
+    assert json_response(resp, 200) == %{"status" => "on"}
   end
 end
