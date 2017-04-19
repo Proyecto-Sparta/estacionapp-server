@@ -15,25 +15,33 @@ defmodule EstacionappServer.ValidateUnique do
     end
   end
 
-  setup do
+  setup_all do
     dropCollection("foos")
+    {status, _} = MongoAdapter.insert_one("foos", %{name: "Tony Hawk"})
+    on_exit(fn -> dropCollection("foos") end)
+    status
   end
 
   test "it is valid when the name is unique" do
-    changeset = Foo.changeset(%{name: "Tony Hawk"})
+    changeset = Foo.changeset(%{name: "Bam Marguera"})
     assert changeset.valid?
   end
 
   test "it is not valid when there is another with the same value" do
-    MongoAdapter.insert_one("foos", %{name: "Tony Hawk"})
-    changeset = Foo.changeset(%{name: "Tony Hawk"})
-    refute changeset.valid?
+    refute errored_changeset().valid?
   end
 
   test "it displays the errors when invalid" do
-    MongoAdapter.insert_one("foos", %{name: "Tony Hawk"})
-    changeset = Foo.changeset(%{name: "Tony Hawk"})
-    {_, {error, _}} = List.first(changeset.errors)
+    {_, {error, _}} = errors()
     assert error == "is already taken"
+  end
+
+  defp errored_changeset do
+    Foo.changeset(%{name: "Tony Hawk"})
+  end
+
+  defp errors do
+    errored_changeset().errors
+    |> List.first
   end
 end
