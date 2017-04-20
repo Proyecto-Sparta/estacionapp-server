@@ -20,6 +20,8 @@ defmodule EstacionappServer.Web do
     quote do
       # Define common model functionality
       alias EstacionappServer.MongoAdapter
+      alias __MODULE__
+
       use Ecto.Schema
       import Ecto.Changeset
 

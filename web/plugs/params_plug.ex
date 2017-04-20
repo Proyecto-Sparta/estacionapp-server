@@ -7,7 +7,7 @@ defmodule EstacionappServer.Plugs.Params do
   def call(conn, module) do
     struct = struct(module)
     changeset = module.changeset(struct, conn.params)
-
+    
     if changeset.valid? do
       assign(conn, :model, Map.merge(struct, changeset.changes))
     else
