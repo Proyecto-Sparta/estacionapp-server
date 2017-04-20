@@ -7,14 +7,14 @@ defmodule EstacionappServer.Plugs.Params do
   def call(conn, module) do
     struct = struct(module)
     changeset = module.changeset(struct, conn.params)
-    
+
     if changeset.valid? do
       assign(conn, :model, Map.merge(struct, changeset.changes))
     else
       conn
-      |> put_status(422)
-      |> json(%{error: error_messages(changeset)})
-      |> halt
+        |> put_status(:unprocessable_entity)
+        |> json(%{error: error_messages(changeset)})
+        |> halt
     end
   end
 

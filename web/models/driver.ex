@@ -13,20 +13,21 @@ defmodule EstacionappServer.Driver do
   def changeset(struct, params \\ %{}) do
     fields = [:full_name, :email, :username]
     struct
-    |> cast(params, fields)
-    |> validate_required(fields)
-    |> validate_length(:username, min: 5)
-    |> validate_unique(:username, @collection)
-    |> validate_length(:full_name, min: 5)
-    |> validate_format(:email, ~r/\w+@\w+.\w+/)
+      |> cast(params, fields)
+      |> validate_required(fields)
+      |> validate_length(:username, min: 5)
+      |> validate_unique(:username, @collection)
+      |> validate_length(:full_name, min: 5)
+      |> validate_format(:email, ~r/\w+@\w+.\w+/)
   end
 
   def create(params) do
     driver =
       %EstacionappServer.Driver{}
-      |> EstacionappServer.Driver.changeset(params)
-      |> Ecto.Changeset.apply_changes
-      |> Map.delete(:_id)
+        |> EstacionappServer.Driver.changeset(params)
+        |> Ecto.Changeset.apply_changes
+        |> Map.delete(:_id)
+
     MongoAdapter.insert_one!(@collection, driver)
       |> Driver.encoded_object_id
   end

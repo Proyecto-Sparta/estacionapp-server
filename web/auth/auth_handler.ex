@@ -3,7 +3,7 @@ defmodule EstacionappServer.AuthHandler do
 
   def unauthenticated(conn, _params) do
     conn
-    |> put_status(401)
-    |> json(%{auth_error: "Authentication required"})
+      |> put_status(:unauthorized)
+      |> json(%{auth_error: "Authentication required"})
   end
 end

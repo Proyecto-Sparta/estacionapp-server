@@ -10,8 +10,8 @@ defmodule EstacionappServer.ValidateUnique do
 
     def changeset(params) do
       %Foo{}
-      |> cast(params, [:name])
-      |> validate_unique(:name, "foos")
+        |> cast(params, [:name])
+        |> validate_unique(:name, "foos")
     end
   end
 
