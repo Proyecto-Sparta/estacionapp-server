@@ -5,7 +5,7 @@ defmodule EstacionappServer.ServerControllerTest do
     resp =
       build_conn()
       |> get("/status")
-      
-    assert json_response(resp, 200) == %{"status" => "on"}
+
+    assert json_response(resp, :ok) == %{"status" => "on"}
   end
 end

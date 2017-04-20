@@ -18,5 +18,6 @@ defmodule EstacionappServer.Router do
   scope "/mobile", EstacionappServer do
     pipe_through :api
     post "/", MobileController, :create
+    get "/login", MobileController, :login
   end
 end

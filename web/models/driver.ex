@@ -34,10 +34,8 @@ defmodule EstacionappServer.Driver do
 
   def collection, do: @collection
 
-  def find_one, do: Driver.find_one(%{})
-
   def find_one(query) do
-    MongoAdapter.find(@collection, query, limit: 1)
+    MongoAdapter.find(@collection, query)
       |> Enum.at(0)
   end
 

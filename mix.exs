@@ -34,7 +34,7 @@ defmodule EstacionappServer.Mixfile do
      {:cowboy, "~> 1.0"},
      {:mongodb, ">= 0.0.0"},
      {:poolboy, ">= 0.0.0"},
-     {:guardian, "~> 0.14"},
+     {:guardian, "~> 0.14.2"},
      {:ecto, "~> 2.1"}]
   end
 end
