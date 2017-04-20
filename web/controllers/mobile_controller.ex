@@ -4,7 +4,8 @@ defmodule EstacionappServer.MobileController do
 
   plug EstacionappServer.Plugs.Params, Driver when action in [:create]
 
-  def create(_conn, _params) do
-
+  def create(conn, params) do
+    id = Driver.create(params)
+    json(conn, %{_id: id})
   end
 end
