@@ -37,9 +37,9 @@ defmodule EstacionappServer.MobileController do
   end
 
   defp authenticate(driver, conn) do
+    if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
     new_conn = Guardian.Plug.api_sign_in(conn, driver)
     jwt = Guardian.Plug.current_token(new_conn)
-
     new_conn
       |> put_resp_header("authorization", "Bearer #{jwt}")
       |> put_status(:accepted)
