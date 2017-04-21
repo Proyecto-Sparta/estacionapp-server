@@ -6,8 +6,7 @@ defmodule EstacionappServer.Router do
   end
 
   pipeline :secure_api do
-    plug :accepts, ["json"]
-    plug Guardian.Plug.VerifyHeader
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
   end
 
   scope "/", EstacionappServer do
@@ -19,5 +18,8 @@ defmodule EstacionappServer.Router do
     pipe_through :api
     post "/", MobileController, :create
     get "/login", MobileController, :login
+
+    pipe_through :secure_api
+    get "/ping", MobileController, :ping
   end
 end
