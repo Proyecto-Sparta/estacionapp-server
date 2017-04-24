@@ -11,10 +11,10 @@ defmodule EstacionappServer.Router do
 
     get "/status", ServerController, :status
 
-    scope "/mobile" do
-      post "/", MobileController, :create
-      get "/login", MobileController, :login
-      get "/ping", MobileController, :ping
+    scope "/driver" do
+      post "/", DriverController, :create
+      get "/login", DriverController, :login
+      get "/ping", DriverController, :ping
     end
   end
 end

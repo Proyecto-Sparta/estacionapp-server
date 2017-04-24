@@ -1,4 +1,4 @@
-defmodule EstacionappServer.MobileControllerTest do
+defmodule EstacionappServer.DriverControllerTest do
   use EstacionappServer.ConnCase
   use EstacionappServer.ModelCase
 
@@ -15,7 +15,7 @@ defmodule EstacionappServer.MobileControllerTest do
   test "create with incomplete params returns :unprocessable_entity and changeset errors" do
     resp =
       build_conn()
-      |> post("/mobile", username: "asd123", full_name: "asd 123")
+      |> post("/driver", username: "asd123", full_name: "asd 123")
 
     assert json_response(resp, :unprocessable_entity) == %{"error" => %{"email" => ["can't be blank"]}}
   end
@@ -32,7 +32,7 @@ defmodule EstacionappServer.MobileControllerTest do
   test "login with wrong parameters returns :unauthorized" do
     resp =
       build_conn()
-      |> get("/mobile/login")
+      |> get("/driver/login")
 
     assert json_response(resp, :unauthorized) == %{"status" => "invalid login credentials"}
   end
@@ -50,7 +50,7 @@ defmodule EstacionappServer.MobileControllerTest do
   test "ping without authorization returns :unauthorized" do
     resp =
       build_conn()
-      |> get("/mobile/ping")
+      |> get("/driver/ping")
 
     assert json_response(resp, :unauthorized) == %{"status" => "login needed"}
   end
@@ -59,7 +59,7 @@ defmodule EstacionappServer.MobileControllerTest do
     resp =
       build_conn()
       |> put_req_header("authorization", jwt())
-      |> get("/mobile/ping")
+      |> get("/driver/ping")
 
     assert json_response(resp, :ok) == %{"status" => "pong"}
   end
@@ -68,10 +68,10 @@ defmodule EstacionappServer.MobileControllerTest do
 
   defp valid_login do
     valid_create()
-    build_conn() |> get("/mobile/login", username: "asd123", email: "asd@asd.com")
+    build_conn() |> get("/driver/login", username: "asd123", email: "asd@asd.com")
   end
 
-  defp valid_create, do: build_conn() |> post("/mobile", username: "asd123", full_name: "asd 123", email: "asd@asd.com")
+  defp valid_create, do: build_conn() |> post("/driver", username: "asd123", full_name: "asd 123", email: "asd@asd.com")
 
   defp drivers_count, do: MongoAdapter.count!(Driver.collection, %{})
 

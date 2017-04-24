@@ -1,4 +1,4 @@
-defmodule EstacionappServer.MobileController do
+defmodule EstacionappServer.DriverController do
   use EstacionappServer.Web, :controller
   alias EstacionappServer.Driver
 
