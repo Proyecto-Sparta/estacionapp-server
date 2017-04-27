@@ -14,7 +14,6 @@ defmodule EstacionappServer.Router do
     scope "/driver" do
       post "/", DriverController, :create
       get "/login", DriverController, :login
-      get "/ping", DriverController, :ping
     end
   end
 end

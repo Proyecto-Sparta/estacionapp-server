@@ -3,17 +3,12 @@ defmodule EstacionappServer.DriverController do
   alias EstacionappServer.Driver
 
   plug EstacionappServer.Plugs.Params, Driver when action in [:create]
-  plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:ping]
 
   def create(conn, params) do
     id = Driver.create(params)
     conn
       |> put_status(:created)
       |> json(%{_id: id})
-  end
-
-  def ping(conn, _params) do
-    json(conn, %{status: "pong"})
   end
 
   def login(conn, params) do

@@ -47,25 +47,6 @@ defmodule EstacionappServer.DriverControllerTest do
     assert json_response(valid_login(), :accepted) == %{"status" => "logged in"}
   end
 
-  test "ping without authorization returns :unauthorized" do
-    resp =
-      build_conn()
-      |> get("/driver/ping")
-
-    assert json_response(resp, :unauthorized) == %{"status" => "login needed"}
-  end
-
-  test "ping with authorization returns pong" do
-    resp =
-      build_conn()
-      |> put_req_header("authorization", jwt())
-      |> get("/driver/ping")
-
-    assert json_response(resp, :ok) == %{"status" => "pong"}
-  end
-
-  defp jwt, do: Plug.Conn.get_resp_header(valid_login(), "authorization") |> List.first
-
   defp valid_login do
     valid_create()
     build_conn() |> get("/driver/login", username: "asd123", email: "asd@asd.com")
