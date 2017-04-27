@@ -59,6 +59,6 @@ defmodule EstacionappServer.DriverControllerTest do
   defp last_id do
     %{}
       |> Driver.find_one
-      |> Driver.encoded_object_id
+      |> MongoAdapter.encoded_object_id
   end
 end

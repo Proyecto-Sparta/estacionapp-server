@@ -29,7 +29,7 @@ defmodule EstacionappServer.Driver do
         |> Map.delete(:_id)
 
     MongoAdapter.insert_one!(@collection, driver)
-      |> Driver.encoded_object_id
+      |> MongoAdapter.encoded_object_id
   end
 
   def collection, do: @collection
@@ -38,10 +38,4 @@ defmodule EstacionappServer.Driver do
     MongoAdapter.find(@collection, query)
       |> Enum.at(0)
   end
-
-  def encoded_object_id(%Mongo.InsertOneResult{inserted_id: id}), do: do_decode(id)
-
-  def encoded_object_id(driver) when is_map(driver), do: do_decode(driver["_id"])
-
-  defp do_decode(id), do: BSON.ObjectId.encode!(id)
 end

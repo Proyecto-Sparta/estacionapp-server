@@ -22,4 +22,10 @@ defmodule EstacionappServer.MongoAdapter do
             _ -> raise "Error proxying Mongo function #{name}/#{arity}"
           end
       end)
+
+    def encoded_object_id(%Mongo.InsertOneResult{inserted_id: id}), do: do_decode(id)
+
+    def encoded_object_id(model) when is_map(model), do: do_decode(model["_id"])
+
+    defp do_decode(id), do: BSON.ObjectId.encode!(id)
 end
