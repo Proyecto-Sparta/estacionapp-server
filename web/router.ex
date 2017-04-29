@@ -15,5 +15,10 @@ defmodule EstacionappServer.Router do
       post "/", DriverController, :create
       get "/login", DriverController, :login
     end
+
+    scope "/garage" do
+      post "/", GarageController, :create
+      get "/login", GarageController, :login
+    end
   end
 end
