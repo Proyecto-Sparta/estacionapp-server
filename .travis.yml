@@ -9,7 +9,7 @@ services:
   - postgresql  
 before_script:  
   - psql -c "CREATE USER estacionapp WITH PASSWORD 'estacionapp';" -U postgres
-  - psql -c "ALTER USER estacionapp CREATEDB" -U postgres
+  - psql -c "ALTER USER estacionapp WITH SUPERUSER" -U postgres
   - psql -U postgres -c "CREATE EXTENSION postgis"
   - mix deps.get
 script:
