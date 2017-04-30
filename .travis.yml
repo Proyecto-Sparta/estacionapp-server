@@ -7,9 +7,9 @@ matrix:
 sudo: false
 services:
   - postgresql  
-before_script:
-  - psql -c "CREATE DATABASE estacionapp_server_test;" -U postgres
+before_script:  
   - psql -c "CREATE USER estacionapp WITH PASSWORD 'estacionapp';" -U postgres
+  - psql -c "ALTER USER estacionapp CREATEDB" -U postgres
   - psql -U postgres -c "CREATE EXTENSION postgis"
   - mix deps.get
 script:
