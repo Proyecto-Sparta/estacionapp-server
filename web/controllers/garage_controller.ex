@@ -1,17 +1,18 @@
-defmodule EstacionappServer.DriverController do
+defmodule EstacionappServer.GarageController do
   use EstacionappServer.Web, :controller
 
-  alias EstacionappServer.{Driver, Repo}
+  alias EstacionappServer.{Garage, Repo}
 
   def create(conn, params) do
-    %Driver{}
-      |> Driver.changeset(params)
+    params = Map.update(params, "location", nil, &make_coordinates/1)
+    %Garage{}
+      |> Garage.changeset(params)
       |> Repo.insert
       |> case do
-        {:ok, driver} ->
+        {:ok, garage} ->
           conn
             |> put_status(:created)
-            |> json(%{id: driver.id})
+            |> json(%{id: garage.id})
 
         {:error, changeset} ->
           conn
@@ -22,14 +23,20 @@ defmodule EstacionappServer.DriverController do
   end
 
   def login(conn, params) do
-    Repo.get_by(Driver, username: Map.get(params, "username", ""))
+    Repo.get_by(Garage, username: Map.get(params, "username", ""))
       |> case do
         nil -> resp_unauthorized(conn, "invalid login credentials")
-        driver -> authenticate(driver, conn)
+        garage -> authenticate(garage, conn)
       end
   end
 
   def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
+
+  defp make_coordinates([lat, long]) do
+    %Geo.Point{coordinates: {long, lat}, srid: 4326}
+  end
+
+  defp make_coordinates(_), do: nil
 
   defp resp_unauthorized(conn, message) do
     conn
@@ -37,9 +44,9 @@ defmodule EstacionappServer.DriverController do
       |> json(%{status: message})
   end
 
-  defp authenticate(driver, conn) do
+  defp authenticate(garage, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
-    new_conn = Guardian.Plug.api_sign_in(conn, driver)
+    new_conn = Guardian.Plug.api_sign_in(conn, garage)
     jwt = Guardian.Plug.current_token(new_conn)
     new_conn
       |> put_resp_header("authorization", "Bearer #{jwt}")

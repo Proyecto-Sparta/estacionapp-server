@@ -15,9 +15,13 @@ defmodule EstacionappServer.Garage do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
+    fields = [:username, :email, :garage_name, :location]
     struct
-    |> cast(params, [:username, :email, :garage_name])
-    |> validate_required([:username, :email, :garage_name])
+    |> cast(params, fields)
+    |> validate_required(fields)
     |> unique_constraint(:username)
+    |> validate_length(:username, min: 5)
+    |> validate_length(:garage_name, min: 5)
+    |> validate_format(:email, ~r/\w+@\w+.\w+/)
   end
 end

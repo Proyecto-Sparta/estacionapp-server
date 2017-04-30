@@ -3,7 +3,10 @@ defmodule EstacionappServer.GarageTest do
 
   alias EstacionappServer.Garage
 
-  @valid_attrs %{email: "some content", garage_name: "some content", username: "some content"}
+  @valid_attrs %{email: "medrano950@gmail.com",
+                 garage_name: "Medrano Parking",
+                 username: "medranoParking",
+                 location: %Geo.Point{coordinates: {0, 0}, srid: 4326} }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
