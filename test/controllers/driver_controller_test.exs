@@ -12,8 +12,9 @@ defmodule EstacionappServer.DriverControllerTest do
   end
 
   test "create with valid params creates a driver" do
+    drivers_before = drivers_count()
     assert json_response(valid_create(), :created)
-    assert drivers_count() == 1
+    assert drivers_count() == drivers_before + 1
   end
 
   test "create returns id" do
@@ -45,7 +46,7 @@ defmodule EstacionappServer.DriverControllerTest do
 
   defp valid_create, do: build_conn() |> post("/api/driver", username: "asd123", full_name: "asd 123", email: "asd@asd.com")
 
-  defp last_id, do: Driver |> Repo.one |> Map.get(:id)
+  defp last_id, do: Driver |> last |> Repo.one |> Map.get(:id)
 
   defp drivers_count, do: Repo.aggregate(Driver, :count, :id)
 

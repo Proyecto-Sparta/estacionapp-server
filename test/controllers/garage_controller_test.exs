@@ -17,8 +17,9 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   test "create with valid params creates a garage" do
+    garages_before = garages_count()
     assert json_response(valid_create(), :created)
-    assert garages_count() == 1
+    assert garages_count() == garages_before + 1
   end
 
   test "create returns id" do
@@ -58,7 +59,7 @@ defmodule EstacionappServer.GarageControllerTest do
               location: [0,0])
   end
 
-  defp last_id, do: Garage |> Repo.one |> Map.get(:id)
+  defp last_id, do: Garage |> last |> Repo.one |> Map.get(:id)
 
   defp garages_count, do: Repo.aggregate(Garage, :count, :id)
 
