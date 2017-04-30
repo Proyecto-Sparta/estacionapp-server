@@ -9,3 +9,23 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias EstacionappServer.{Repo, Garage}
+
+create_garage = fn name, coordinates ->
+  %Garage{username: "#{name} #{Enum.random(0..100)}",
+          garage_name: name,
+          email: name <> "@gmail.com",
+          location: %Geo.Point{srid: 4326, coordinates: coordinates}}
+end
+
+[create_garage.("Apart Car Palermo", {-34.578403, -58.412675}),
+ create_garage.("Taurusmania", {-34.587792, -58.414531}),
+ create_garage.("Garage Prada SRL", {-34.590053, -58.404017}),
+ create_garage.("Parking Costa Rica SRL", {-34.586979, -58.428994}),
+ create_garage.("Apart Car Recoleta II", {-34.595600, -58.399725}),
+ create_garage.("La Cortada", {-34.600472, -58.376918}),
+ create_garage.("Garage", {-34.605203, -58.383613}),
+ create_garage.("Apart Car Monserrat", {-34.613573, -58.382733}),
+ create_garage.("Apart Car Madero Marie", {-34.620637, -58.366168})]
+  |> Enum.each(fn garage -> Repo.insert!(garage) end)
