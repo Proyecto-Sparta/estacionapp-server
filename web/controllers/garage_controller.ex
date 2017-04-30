@@ -43,7 +43,8 @@ defmodule EstacionappServer.GarageController do
   }
   """
   def login(conn, params) do
-    Repo.get_by(Garage, username: Map.get(params, "username", ""))
+    params
+      |> Garage.authenticate
       |> case do
         nil -> resp_unauthorized(conn, "invalid login credentials")
         garage -> authenticate(garage, conn)

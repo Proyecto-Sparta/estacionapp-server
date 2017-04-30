@@ -1,5 +1,6 @@
 defmodule EstacionappServer.Garage do
   use EstacionappServer.Web, :model
+  alias EstacionappServer.Repo
 
   schema "garages" do
     field :username, :string
@@ -24,4 +25,12 @@ defmodule EstacionappServer.Garage do
     |> validate_length(:garage_name, min: 5)
     |> validate_format(:email, ~r/\w+@\w+.\w+/)
   end
+
+  def authenticate(%{"username" => username}) do
+    Garage
+      |> where(username: ^username)
+      |> Repo.one
+  end
+  
+  def authenticate(_), do: nil
 end
