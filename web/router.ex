@@ -6,19 +6,12 @@ defmodule EstacionappServer.Router do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
   end
 
-  scope "/", EstacionappServer do
+  scope "/api", EstacionappServer do
     pipe_through :api
-
-    get "/status", ServerController, :status
 
     scope "/driver" do
       post "/", DriverController, :create
       get "/login", DriverController, :login
-    end
-
-    scope "/garage" do
-      post "/", GarageController, :create
-      get "/login", GarageController, :login
     end
   end
 end

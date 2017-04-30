@@ -1,22 +1,28 @@
 defmodule EstacionappServer.DriverController do
   use EstacionappServer.Web, :controller
-  alias EstacionappServer.Driver
 
-  plug EstacionappServer.Plugs.Params, Driver when action in [:create]
+  alias EstacionappServer.{Driver, Repo}
 
   def create(conn, params) do
-    id = Driver.create(params)
-    conn
-      |> put_status(:created)
-      |> json(%{_id: id})
+    %EstacionappServer.Driver{}
+      |> Driver.changeset(params)
+      |> Repo.insert
+      |> case do
+        {:ok, driver} ->
+          conn
+            |> put_status(:created)
+            |> json(%{id: driver.id})
+
+        {:error, changeset} ->
+          conn
+            |> put_status(:unprocessable_entity)
+            |> json(error_messages(changeset))
+            |> halt
+      end
   end
 
   def login(conn, params) do
-    default_params = %{"username" => nil, "email" => nil}
-    params
-      |> Map.take(["username", "email"])
-      |> Map.merge(default_params, fn _key, value, default_value -> default_value || value end)
-      |> Driver.find_one
+    Repo.get_by(Driver, username: Map.get(params, "username", ""))
       |> case do
         nil -> resp_unauthorized(conn, "invalid login credentials")
         driver -> authenticate(driver, conn)

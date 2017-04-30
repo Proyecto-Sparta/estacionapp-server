@@ -18,21 +18,11 @@ defmodule EstacionappServer.Web do
 
   def model do
     quote do
-      # Define common model functionality
-      alias EstacionappServer.MongoAdapter
-      alias __MODULE__
-
       use Ecto.Schema
-      import Ecto.Changeset
 
-      defp validate_unique(changeset, field, collection) do
-        validate_change(changeset, field, fn _, value ->
-          case MongoAdapter.count(collection, %{field => value}) do
-            {:ok, 0} -> []
-            _ -> [{field, "is already taken"}]
-          end
-        end)
-      end
+      import Ecto
+      import Ecto.Changeset
+      import Ecto.Query
     end
   end
 
@@ -40,8 +30,20 @@ defmodule EstacionappServer.Web do
     quote do
       use Phoenix.Controller
 
+      alias EstacionappServer.Repo
+      import Ecto
+      import Ecto.Query
+
       import EstacionappServer.Router.Helpers
       import EstacionappServer.Gettext
+
+      defp error_messages(changeset) do
+        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+          Enum.reduce(opts, msg, fn {key, value}, acc ->
+            String.replace(acc, "%{#{key}}", to_string(value))
+          end)
+        end)
+      end
     end
   end
 
@@ -67,6 +69,10 @@ defmodule EstacionappServer.Web do
   def channel do
     quote do
       use Phoenix.Channel
+
+      alias EstacionappServer.Repo
+      import Ecto
+      import Ecto.Query
       import EstacionappServer.Gettext
     end
   end
