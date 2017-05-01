@@ -6,7 +6,7 @@ defmodule EstacionappServer.GarageControllerTest do
   test "create with incomplete params returns :unprocessable_entity and changeset errors" do
     resp =
       build_conn()
-      |> post("/api/garage")
+        |> post("/api/garage")
 
     error = %{"email" => ["can't be blank"],
               "username" => ["can't be blank"],
@@ -17,9 +17,8 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   test "create with valid params creates a garage" do
-    garages_before = garages_count()
     assert json_response(valid_create(), :created)
-    assert garages_count() == garages_before + 1
+    assert garages_count() == 1
   end
 
   test "create returns id" do

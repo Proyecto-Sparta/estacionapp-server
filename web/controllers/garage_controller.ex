@@ -1,10 +1,10 @@
 defmodule EstacionappServer.GarageController do
   @moduledoc """
-  This is the controller for all API calls related with garages.
+  This is the controller for all API calls related with the garages client.
   """
 
   use EstacionappServer.Web, :controller
-  alias EstacionappServer.{Garage, Repo}
+  alias EstacionappServer.{Garage, Repo, Utils}
 
   @doc """
   Inserts a new Garage. 
@@ -17,7 +17,7 @@ defmodule EstacionappServer.GarageController do
   }
   """
   def create(conn, params) do
-    params = Map.update(params, "location", nil, &make_coordinates/1)
+    params = Map.update(params, "location", nil, &Utils.Gis.make_coordinates/1)
     %Garage{}
       |> Garage.changeset(params)
       |> Repo.insert
@@ -62,12 +62,6 @@ defmodule EstacionappServer.GarageController do
   end
 
   def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
-
-  defp make_coordinates([lat, long]) do
-    %Geo.Point{coordinates: {long, lat}, srid: 4326}
-  end
-
-  defp make_coordinates(_), do: nil
 
   defp resp_unauthorized(conn, message) do
     conn

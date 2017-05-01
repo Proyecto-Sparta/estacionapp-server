@@ -22,4 +22,12 @@ defmodule EstacionappServer.Driver do
     |> validate_length(:full_name, min: 5)
     |> validate_format(:email, ~r/\w+@\w+.\w+/)
   end
+
+  def authenticate(%{"username" => username}) do
+    Driver
+      |> where(username: ^username)
+      |> Repo.one
+  end
+  
+  def authenticate(_), do: nil
 end

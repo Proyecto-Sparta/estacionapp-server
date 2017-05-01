@@ -24,7 +24,9 @@ defmodule EstacionappServer.Web do
       import Ecto.Changeset
       import Ecto.Query
 
+      alias EstacionappServer.Repo
       alias __MODULE__
+
     end
   end
 

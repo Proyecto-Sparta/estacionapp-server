@@ -10,13 +10,13 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias EstacionappServer.{Repo, Garage}
+alias EstacionappServer.{Repo, Garage, Utils}
 
 create_garage = fn name, coordinates ->
   %Garage{username: "#{name} #{Enum.random(0..100)}",
           garage_name: name,
           email: name <> "@gmail.com",
-          location: %Geo.Point{srid: 4326, coordinates: coordinates}}
+          location: Utils.Gis.make_coordinates(coordinates)}
 end
 
 [create_garage.("Apart Car Palermo", {-58.412675, -34.578403}),

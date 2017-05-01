@@ -1,8 +1,20 @@
 defmodule EstacionappServer.DriverController do
+  @moduledoc """
+  This is the controller for all API calls related with the drivers client.
+  """
+
   use EstacionappServer.Web, :controller
+  alias EstacionappServer.{Driver, Garage, Repo, Utils}
 
-  alias EstacionappServer.{Driver, Repo}
-
+  @doc """
+  Inserts a new Driver. 
+  Returns the inserted driver id or a hash with changeset errors.
+  Params:{
+    full_name: string,
+    username: string,
+    email: string    
+  }
+  """
   def create(conn, params) do
     %Driver{}
       |> Driver.changeset(params)
@@ -21,12 +33,39 @@ defmodule EstacionappServer.DriverController do
       end
   end
 
+  @doc """
+  Authenticates a garage. 
+  Returns the jwt token inside authorization header.
+  Params:{
+    username: string
+  }
+  """
   def login(conn, params) do
-    Repo.get_by(Driver, username: Map.get(params, "username", ""))
+    params
+      |> Driver.authenticate
       |> case do
         nil -> resp_unauthorized(conn, "invalid login credentials")
         driver -> authenticate(driver, conn)
       end
+  end
+
+  @doc """
+  Searches for garages. 
+  Returns an array of garages that satisfies the conditions.
+  Params:{
+    location: [lat, long]
+    max_distance: [Optional] number
+  }
+  """
+  def search(conn, params) do
+    
+    garages = params
+      |> Map.update(:location, nil, &Utils.Gis.make_coordinates/1)
+      |> Garage.close_to
+
+    conn
+      |> json(%{garages: garages})
+      
   end
 
   def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
