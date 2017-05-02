@@ -12,4 +12,25 @@ defmodule EstacionappServer.Utils.Gis do
   """
   def make_coordinates([lat, long]), do: %Geo.Point{coordinates: {long, lat}, srid: 4326}
   def make_coordinates(_), do: nil
+
+  def encode(model) do
+    model
+      |> Map.update!(:location, &Geo.JSON.encode/1)
+      |> Map.get_and_update(:location, fn location -> 
+           [long, lat] = location["coordinates"]
+           {location, %{"latitude" => lat, "longitude" => long}} 
+         end)
+      |> elem(1)
+  end
+end
+
+defmodule EstacionappServer.Utils.Parse do
+  @moduledoc """
+  Module that gathers all parsing related utils
+  """
+
+  def to_float(string) do
+    {value, _} = Float.parse(string)
+    value
+  end  
 end
