@@ -42,10 +42,9 @@ defmodule EstacionappServer.GarageTest do
     assert garage.distance == 16591
   end
 
-  defp garages_close_to_devoto(distance \\ %{}) do
+  defp garages_close_to_devoto(params \\ %{}) do
     devoto_square = Utils.Gis.make_coordinates([-34.5993687, -58.5122663])
-    location = %{"location" => devoto_square}
-    Garage.close_to(Map.merge(distance, location))
+    params = Map.put_new(params, "max_distance", nil)
+    Garage.close_to(devoto_square, params)
   end
 end
-

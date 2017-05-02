@@ -57,15 +57,18 @@ defmodule EstacionappServer.DriverController do
     max_distance: [Optional] number
   }
   """
-  def search(conn, params) do
+  def search(conn, %{"latitude" => lat, "longitude" => long} = params) do
+    params = params
+      |> Map.update("max_distance", nil, &Utils.Parse.to_float/1)
     
-    garages = params
-      |> Map.update(:location, nil, &Utils.Gis.make_coordinates/1)
-      |> Garage.close_to
+    garages = [lat, long]
+      |> Enum.map(&Utils.Parse.to_float/1)
+      |> Utils.Gis.make_coordinates
+      |> Garage.close_to(params)
+      |> Enum.map(&Utils.Gis.encode/1)
 
     conn
       |> json(%{garages: garages})
-      
   end
 
   def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
