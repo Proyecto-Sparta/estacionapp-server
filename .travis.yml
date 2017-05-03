@@ -4,6 +4,7 @@ matrix:
     - otp_release: 19.0
       elixir: 1.4.0
       script: mix test
+dist: trusty
 sudo: false
 services:
   - mongodb
