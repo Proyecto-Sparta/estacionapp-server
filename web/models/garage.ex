@@ -5,7 +5,7 @@ defmodule EstacionappServer.Garage do
   import Geo.PostGIS
   import EstacionappServer.Utils.Gis
 
-  @derive {Poison.Encoder, only: [:username, :email, :garage_name, :location, :distance]}
+  
 
   schema "garages" do
     field :username, :string
@@ -35,12 +35,20 @@ defmodule EstacionappServer.Garage do
   @doc """
   Searches garages by distance
   """
-  def close_to(location, params) do    
+  def close_to(%{"location" => location} = params) do    
     Garage
       |> closer_than(location, params["max_distance"])
       |> select_distance(location)
       |> Repo.all
   end
+
+  def authenticate(%{"username" => username}) do
+    Garage
+      |> where(username: ^username)
+      |> Repo.one
+  end
+  
+  def authenticate(_), do: nil
 
   defp closer_than(queryable, _, nil), do: queryable
   
@@ -54,12 +62,4 @@ defmodule EstacionappServer.Garage do
     from garage in queryable,
       select: %{garage | distance: st_distance_spheroid(^location, garage.location)}
   end
-
-  def authenticate(%{"username" => username}) do
-    Garage
-      |> where(username: ^username)
-      |> Repo.one
-  end
-  
-  def authenticate(_), do: nil
 end

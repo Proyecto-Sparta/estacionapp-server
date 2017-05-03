@@ -30,9 +30,11 @@ defmodule EstacionappServer.GarageTest do
 
   test "close_to with max_distance filters garages" do
     insert(:garage)
-    garages = garages_close_to_devoto(%{"max_distance" => 500})
+    insert(:garage, username: "Devoto Parking",
+           location: Utils.Gis.make_coordinates([-34.597524, -58.515372]))
+    garages = garages_close_to_devoto(%{"max_distance" => 400})
 
-    assert Enum.count(garages) == 0
+    assert Enum.count(garages) == 1
   end
 
   test "close_to inserts distance" do
@@ -44,7 +46,9 @@ defmodule EstacionappServer.GarageTest do
 
   defp garages_close_to_devoto(params \\ %{}) do
     devoto_square = Utils.Gis.make_coordinates([-34.5993687, -58.5122663])
-    params = Map.put_new(params, "max_distance", nil)
-    Garage.close_to(devoto_square, params)
+    params
+      |> Map.put_new("max_distance", nil)
+      |> Map.put("location", devoto_square)
+      |> Garage.close_to
   end
 end

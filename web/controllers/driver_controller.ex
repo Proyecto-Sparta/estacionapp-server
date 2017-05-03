@@ -6,6 +6,8 @@ defmodule EstacionappServer.DriverController do
   use EstacionappServer.Web, :controller
   alias EstacionappServer.{Driver, Garage, Repo, Utils}
 
+  plug :sanitize_search_params when action in [:search]
+
   @doc """
   Inserts a new Driver. 
   Returns the inserted driver id or a hash with changeset errors.
@@ -52,23 +54,16 @@ defmodule EstacionappServer.DriverController do
   @doc """
   Searches for garages. 
   Returns an array of garages that satisfies the conditions.
-  Params:{
-    location: [lat, long]
-    max_distance: [Optional] number
-  }
+  Querystring: /search?
+    latitude=#XXX             [Required]
+    longitude=YYY             [Required]
+    max_distance=ZZZ          [Optional] 
   """
-  def search(conn, %{"latitude" => lat, "longitude" => long} = params) do
-    params = params
-      |> Map.update("max_distance", nil, &Utils.Parse.to_float/1)
-    
-    garages = [lat, long]
-      |> Enum.map(&Utils.Parse.to_float/1)
-      |> Utils.Gis.make_coordinates
-      |> Garage.close_to(params)
-      |> Enum.map(&Utils.Gis.encode/1)
-
-    conn
-      |> json(%{garages: garages})
+  def search(conn, params) do
+    params
+      |> Garage.close_to
+      |> Enum.map(&encode/1)
+      |> (&json(conn, %{garages: &1})).()
   end
 
   def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
@@ -87,5 +82,18 @@ defmodule EstacionappServer.DriverController do
       |> put_resp_header("authorization", "Bearer #{jwt}")
       |> put_status(:accepted)
       |> json(%{status: "logged in"})
+  end
+
+  defp sanitize_search_params(%{:params => params} = conn, _) do
+    location = params
+      |> Map.take(["latitude", "longitude"])
+      |> Map.values
+      |> Enum.map(&Utils.Parse.to_float/1)
+      |> Utils.Gis.make_coordinates    
+    
+    params
+      |> Map.update("max_distance", nil, &Utils.Parse.to_float/1)
+      |> Map.put("location", location)
+      |> (&Map.put(conn, :params, &1)).()
   end
 end
