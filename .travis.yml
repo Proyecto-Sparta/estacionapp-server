@@ -10,7 +10,7 @@ services:
   - mongodb
 before_script:
   - mix deps.get
-  - sleep 10
+  - sleep 15
 script:
   - mix test
   
