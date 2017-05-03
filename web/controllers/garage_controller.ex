@@ -4,6 +4,7 @@ defmodule EstacionappServer.GarageController do
   """
 
   use EstacionappServer.Web, :controller
+  
   alias EstacionappServer.{Garage, Repo, Utils}
 
   @doc """

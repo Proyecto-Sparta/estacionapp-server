@@ -4,9 +4,11 @@ defmodule EstacionappServer.DriverController do
   """
 
   use EstacionappServer.Web, :controller
+  
   alias EstacionappServer.{Driver, Garage, Repo, Utils}
 
   plug :sanitize_search_params when action in [:search]
+  plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search]
 
   @doc """
   Inserts a new Driver. 

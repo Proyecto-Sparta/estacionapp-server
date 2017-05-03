@@ -1,8 +1,9 @@
 defmodule EstacionappServer.GarageTest do
   use EstacionappServer.ModelCase
-  import EstacionappServer.Factory
-
+  
   alias EstacionappServer.{Garage, Utils}
+
+  import EstacionappServer.Factory  
 
   @valid_attrs %{email: "medrano950@gmail.com",
                  garage_name: "Medrano Parking",

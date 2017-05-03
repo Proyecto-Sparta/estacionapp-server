@@ -3,10 +3,10 @@ defmodule EstacionappServer.GarageControllerTest do
 
   alias EstacionappServer.Garage
 
+  import EstacionappServer.Factory 
+
   test "create with incomplete params returns :unprocessable_entity and changeset errors" do
-    resp =
-      build_conn()
-        |> post("/api/garage")
+    resp = build_conn() |> post("/api/garage")
 
     error = %{"email" => ["can't be blank"],
               "username" => ["can't be blank"],
@@ -26,9 +26,7 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   test "login with wrong parameters returns :unauthorized" do
-    resp =
-      build_conn()
-      |> get("/api/garage/login")
+    resp = build_conn() |> get("/api/garage/login")
 
     assert json_response(resp, :unauthorized) == %{"status" => "invalid login credentials"}
   end
@@ -44,11 +42,6 @@ defmodule EstacionappServer.GarageControllerTest do
     assert json_response(valid_login(), :accepted) == %{"status" => "logged in"}
   end
 
-  defp valid_login do
-    valid_create()
-    build_conn() |> get("api/garage/login", username: "medranogarage950")
-  end
-
   defp valid_create do
     build_conn()
       |> post("/api/garage",
@@ -56,6 +49,11 @@ defmodule EstacionappServer.GarageControllerTest do
               email: "medranogarage950@gmail.com",
               garage_name: "Medrano 950",
               location: [0,0])
+  end
+
+  defp valid_login do
+    insert(:garage)
+    build_conn() |> get("api/garage/login", username: "garageuser123")
   end
 
   defp last_id, do: Garage |> last |> Repo.one |> Map.get(:id)

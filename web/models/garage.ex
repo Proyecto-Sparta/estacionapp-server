@@ -2,10 +2,9 @@ defmodule EstacionappServer.Garage do
   use EstacionappServer.Web, :model
   
   alias EstacionappServer.Repo
-  import Geo.PostGIS
-  import EstacionappServer.Utils.Gis
 
-  
+  import Geo.PostGIS
+  import EstacionappServer.Utils.Gis  
 
   schema "garages" do
     field :username, :string

@@ -10,13 +10,19 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias EstacionappServer.{Repo, Garage, Utils}
+alias EstacionappServer.{Repo, Garage, Driver, Utils}
 
 create_garage = fn name, coordinates ->
   %Garage{username: "#{name} #{Enum.random(0..100)}",
           garage_name: name,
           email: name <> "@gmail.com",
           location: Utils.Gis.make_coordinates(coordinates)}
+end
+
+create_driver = fn name ->
+  %Driver{username: "#{name} #{Enum.random(0..100)}",
+          full_name: name,
+          email: name <> "@gmail.com"}
 end
 
 [create_garage.("Apart Car Palermo", [-34.578403, -58.412675]),
@@ -27,5 +33,6 @@ end
  create_garage.("La Cortada", [-34.600472, -58.376918]),
  create_garage.("Garage", [-34.605203, -58.383613]),
  create_garage.("Apart Car Monserrat", [-34.613369, -58.383643]),
- create_garage.("Apart Car Madero Marie", [-34.620637, -58.366168])]
-  |> Enum.each(fn garage -> Repo.insert!(garage) end)
+ create_garage.("Apart Car Madero Marie", [-34.620637, -58.366168]),
+ create_driver.("Chris McCord"), create_driver.("Ellon Musk")]
+  |> Enum.each(&Repo.insert!/1)
