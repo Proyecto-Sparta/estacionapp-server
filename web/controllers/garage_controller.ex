@@ -4,11 +4,13 @@ defmodule EstacionappServer.GarageController do
   """
 
   use EstacionappServer.Web, :controller
-  
+
   alias EstacionappServer.{Garage, Repo, Utils}
 
+  plug :login_params when var!(action) in [:login]
+
   @doc """
-  Inserts a new Garage. 
+  Inserts a new Garage.
   Returns the inserted garage id or a hash with changeset errors.
   Params:{
     location: [lat, long],
@@ -37,7 +39,7 @@ defmodule EstacionappServer.GarageController do
   end
 
   @doc """
-  Authenticates a garage. 
+  Authenticates a garage.
   Returns the jwt token inside authorization header.
   Params:{
     username: string
@@ -50,6 +52,20 @@ defmodule EstacionappServer.GarageController do
         nil -> resp_unauthorized(conn, "invalid login credentials")
         garage -> authenticate(garage, conn)
       end
+  end
+
+  defp login_params(conn, _) do
+    try do
+      [user, pass] = conn
+        |> get_req_header("authorization")
+        |> List.first
+        |> String.slice(6..-1)
+        |> Base.decode64!
+        |> String.split(":")
+      Map.put(conn, :params, %{"username" => user, "password" => Cipher.encrypt(pass)})
+    rescue
+      _ -> raise EstacionappServer.LoginAuthError
+    end
   end
 
   defp authenticate(garage, conn) do

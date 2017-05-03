@@ -13,7 +13,8 @@
 alias EstacionappServer.{Repo, Garage, Driver, Utils}
 
 create_garage = fn name, coordinates ->
-  %Garage{username: "#{name} #{Enum.random(0..100)}",
+  %Garage{username: name,
+          password_digest: Cipher.encrypt("password"),
           garage_name: name,
           email: name <> "@gmail.com",
           location: Utils.Gis.make_coordinates(coordinates)}

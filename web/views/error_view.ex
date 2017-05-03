@@ -1,6 +1,10 @@
 defmodule EstacionappServer.ErrorView do
   use EstacionappServer.Web, :view
 
+  def render("400.json", assigns) do
+    %{errors: %{detail: assigns.reason.message}}
+  end
+
   def render("404.json", _assigns) do
     %{errors: %{detail: "Page not found"}}
   end

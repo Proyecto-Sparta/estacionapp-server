@@ -8,7 +8,8 @@ defmodule EstacionappServer.GarageTest do
   @valid_attrs %{email: "medrano950@gmail.com",
                  garage_name: "Medrano Parking",
                  username: "medranoParking",
-                 location: Utils.Gis.make_coordinates([0,0]) }
+                 location: Utils.Gis.make_coordinates([0,0]),
+                 password: "password"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

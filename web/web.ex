@@ -27,6 +27,14 @@ defmodule EstacionappServer.Web do
       alias EstacionappServer.Repo
       alias __MODULE__
 
+      defp put_digested_password(changeset) do
+        if changeset.valid? do
+          hashed_pass = Cipher.encrypt(changeset.params["password"])
+          put_change(changeset, :password_digest, hashed_pass)
+        else
+          changeset
+        end
+      end
     end
   end
 
@@ -34,12 +42,12 @@ defmodule EstacionappServer.Web do
     quote do
       use Phoenix.Controller
 
-      alias EstacionappServer.Repo
       import Ecto
       import Ecto.Query
-
       import EstacionappServer.Router.Helpers
       import EstacionappServer.Gettext
+
+      alias EstacionappServer.{Repo, BadRequest}
 
       defp error_messages(changeset) do
         Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
@@ -48,17 +56,18 @@ defmodule EstacionappServer.Web do
           end)
         end)
       end
-      
+
       defp encode(model) do
         model
           |> Map.update!(:location, &Geo.JSON.encode/1)
-          |> Map.get_and_update(:location, fn location -> 
+          |> Map.get_and_update(:location, fn location ->
               [long, lat] = location["coordinates"]
-              {location, %{"latitude" => lat, "longitude" => long}} 
+              {location, %{"latitude" => lat, "longitude" => long}}
             end)
           |> elem(1)
           |> Map.delete(:__meta__)
       end
+
     end
   end
 

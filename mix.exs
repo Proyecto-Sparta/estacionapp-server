@@ -38,7 +38,8 @@ defmodule EstacionappServer.Mixfile do
      {:cowboy, "~> 1.0"},
      {:geo, "~> 1.4"},
      {:guardian, "~> 0.14.2"},
-     {:ex_machina, "~> 2.0", only: :test}]
+     {:ex_machina, "~> 2.0", only: :test},
+     {:cipher, ">= 1.3.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
