@@ -34,7 +34,7 @@ defmodule EstacionappServer.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_estacionapp_server_key",
-    signing_salt: "IXlTMsCN"
+    signing_salt: "7tpwzWff"
 
   plug EstacionappServer.Router
 end

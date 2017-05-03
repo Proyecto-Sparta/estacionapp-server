@@ -3,14 +3,13 @@ matrix:
   include:
     - otp_release: 19.0
       elixir: 1.4.0
-      script: mix test
 dist: trusty
 sudo: false
 services:
-  - mongodb
-before_script:
+  - postgresql  
+before_script:  
+  - psql -c "CREATE USER estacionapp WITH PASSWORD 'estacionapp' SUPERUSER;" -U postgres
+  - psql -U postgres -c "CREATE EXTENSION postgis"
   - mix deps.get
-  - sleep 15
 script:
   - mix test
-  

@@ -8,3 +8,12 @@ config :estacionapp_server, EstacionappServer.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# Configure your database
+config :estacionapp_server, EstacionappServer.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "estacionapp",
+  password: "estacionapp",
+  database: "estacionapp_server_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
