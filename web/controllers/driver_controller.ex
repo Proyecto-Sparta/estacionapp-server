@@ -7,8 +7,8 @@ defmodule EstacionappServer.DriverController do
   
   alias EstacionappServer.{Driver, Garage, Repo, Utils}
 
-  plug :sanitize_search_params when action in [:search]
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search]
+  plug :sanitize_search_params when action in [:search]
 
   @doc """
   Inserts a new Driver. 
@@ -20,21 +20,13 @@ defmodule EstacionappServer.DriverController do
   }
   """
   def create(conn, params) do
-    %Driver{}
+    driver = %Driver{}
       |> Driver.changeset(params)
-      |> Repo.insert
-      |> case do
-        {:ok, driver} ->
-          conn
-            |> put_status(:created)
-            |> json(%{id: driver.id})
+      |> Repo.insert!
 
-        {:error, changeset} ->
-          conn
-            |> put_status(:unprocessable_entity)
-            |> json(error_messages(changeset))
-            |> halt
-      end
+    conn
+      |> put_status(:created)
+      |> json(%{id: driver.id})
   end
 
   @doc """
@@ -48,9 +40,9 @@ defmodule EstacionappServer.DriverController do
     params
       |> Driver.authenticate
       |> case do
-        nil -> resp_unauthorized(conn, "invalid login credentials")
+        nil -> raise Error.Unauthorized, message: "Invalid credentials."
         driver -> authenticate(driver, conn)
-      end
+      end        
   end
 
   @doc """
@@ -68,14 +60,6 @@ defmodule EstacionappServer.DriverController do
       |> (&json(conn, %{garages: &1})).()
   end
 
-  def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
-
-  defp resp_unauthorized(conn, message) do
-    conn
-      |> put_status(:unauthorized)
-      |> json(%{status: message})
-  end
-
   defp authenticate(driver, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
     new_conn = Guardian.Plug.api_sign_in(conn, driver)
@@ -87,15 +71,18 @@ defmodule EstacionappServer.DriverController do
   end
 
   defp sanitize_search_params(%{:params => params} = conn, _) do
-    location = params
-      |> Map.take(["latitude", "longitude"])
-      |> Map.values
-      |> Enum.map(&Utils.Parse.to_float/1)
-      |> Utils.Gis.make_coordinates    
-    
-    params
-      |> Map.update("max_distance", nil, &Utils.Parse.to_float/1)
-      |> Map.put("location", location)
-      |> (&Map.put(conn, :params, &1)).()
+    try do            
+      %{"latitude" => lat, "longitude" => long} = params            
+      location = [lat, long]
+        |> Enum.map(&Utils.Parse.to_float/1)
+        |> Utils.Gis.make_coordinates
+
+      params
+        |> Map.update("max_distance", nil, &Utils.Parse.to_float/1)
+        |> Map.put("location", location)
+        |> (&Map.put(conn, :params, &1)).()
+    rescue
+      _ -> raise Error.BadRequest, message: "Error parsing search params."      
+    end   
   end
 end

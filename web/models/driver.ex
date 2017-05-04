@@ -2,9 +2,12 @@ defmodule EstacionappServer.Driver do
   use EstacionappServer.Web, :model
 
   schema "drivers" do
-    field :full_name, :string
     field :username, :string
+    field :password_digest, :string
+    field :full_name, :string
     field :email, :string
+
+    field :password, :string, virtual: true
 
     timestamps()
   end
@@ -13,7 +16,7 @@ defmodule EstacionappServer.Driver do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-    fields = [:full_name, :username, :email]
+    fields = [:full_name, :username, :email, :password]
     struct
     |> cast(params, fields)
     |> validate_required(fields)
@@ -21,13 +24,12 @@ defmodule EstacionappServer.Driver do
     |> validate_length(:username, min: 5)
     |> validate_length(:full_name, min: 5)
     |> validate_format(:email, ~r/\w+@\w+.\w+/)
+    |> put_digested_password
   end
 
-  def authenticate(%{"username" => username}) do
+  def authenticate(%{"username" => username, "password" => pass}) do
     Driver
-      |> where(username: ^username)
+      |> where(username: ^username, password_digest: ^pass)
       |> Repo.one
   end
-  
-  def authenticate(_), do: nil
 end

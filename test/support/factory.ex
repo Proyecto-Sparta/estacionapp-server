@@ -14,6 +14,7 @@ defmodule EstacionappServer.Factory do
     def driver_factory do
       %Driver{username: "joValim",
         full_name: "Jose Valim",
-        email: "jvalim@plataformatec.br"}
+        email: "jvalim@plataformatec.br",
+        password_digest: Cipher.encrypt("password")}
     end
 end

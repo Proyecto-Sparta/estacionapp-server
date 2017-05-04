@@ -5,16 +5,22 @@ defmodule EstacionappServer.GarageControllerTest do
 
   import EstacionappServer.Factory
 
-  test "create with incomplete params returns :unprocessable_entity and changeset errors" do
-    resp = build_conn() |> post("/api/garage")
+  test "create with incomplete params returns :unprocessable_entity" do
+    assert_error_sent :unprocessable_entity, fn ->
+      build_conn() |> post("/api/garage")
+    end    
+  end
 
-    error = %{"email" => ["can't be blank"],
-              "username" => ["can't be blank"],
-              "garage_name" => ["can't be blank"],
-              "location" => ["can't be blank"],
-              "password" => ["can't be blank"]}
+  test "create with incomplete params returns the errors of the changeset" do
+    {_, _, resp} = assert_error_sent :unprocessable_entity, fn ->
+      build_conn() |> post("/api/garage")
+    end
 
-    assert json_response(resp, :unprocessable_entity) == error
+    assert Poison.decode!(resp) ==  %{"errors" => %{"detail" => %{"email" => ["can't be blank"], 
+                                      "garage_name" => ["can't be blank"], 
+                                      "location" => ["can't be blank"], 
+                                      "password" => ["can't be blank"], 
+                                      "username" => ["can't be blank"]}}}
   end
 
   test "create with valid params creates a garage" do
@@ -26,18 +32,26 @@ defmodule EstacionappServer.GarageControllerTest do
     assert json_response(valid_create(), :created) == %{"id" => last_id()}
   end
 
-  test "login without parameters returns :bad_request" do
+  test "login without authorization returns :bad_request" do
     assert_error_sent :bad_request, fn ->
       build_conn() |> get("/api/garage/login")
     end
   end
 
-  test "login with wrong parameters returns :unauthorized" do
+  test "login with wrong authorization returns :bad_request" do
     assert_error_sent :bad_request, fn ->
       build_conn()
         |> put_req_header("authorization", "foobar")
         |> get("/api/garage/login")
     end
+  end
+
+  test "login with invalid authorization returns :unauthorized" do
+    assert_error_sent :unauthorized, fn ->
+      build_conn() 
+        |> put_req_header("authorization", "Basic am9zZTpqb3NlMTIz")
+        |> get("/api/garage/login")
+    end       
   end
 
   test "login with valid params returns :accepted" do

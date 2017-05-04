@@ -3,8 +3,9 @@ defmodule EstacionappServer.Repo.Migrations.CreateDriver do
 
   def change do
     create table(:drivers) do
-      add :full_name, :string
       add :username, :string
+      add :password_digest, :string
+      add :full_name, :string
       add :email, :string
 
       timestamps()

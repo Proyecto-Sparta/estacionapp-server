@@ -1,11 +1,11 @@
 defmodule EstacionappServer.Garage do
   use EstacionappServer.Web, :model
 
-  alias EstacionappServer.Repo
-
   import Geo.PostGIS
   import EstacionappServer.Utils.Gis
 
+  alias EstacionappServer.Repo
+  
   schema "garages" do
     field :username, :string
     field :password_digest, :string
@@ -50,8 +50,6 @@ defmodule EstacionappServer.Garage do
       |> where(username: ^username, password_digest: ^pass)
       |> Repo.one
   end
-
-  def authenticate(_), do: nil
 
   defp closer_than(queryable, _, nil), do: queryable
 

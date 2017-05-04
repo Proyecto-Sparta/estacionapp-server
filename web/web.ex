@@ -24,12 +24,12 @@ defmodule EstacionappServer.Web do
       import Ecto.Changeset
       import Ecto.Query
 
-      alias EstacionappServer.Repo
+      alias EstacionappServer.{Repo, Utils, Error}
       alias __MODULE__
 
       defp put_digested_password(changeset) do
         if changeset.valid? do
-          hashed_pass = Cipher.encrypt(changeset.params["password"])
+          hashed_pass = Utils.Crypto.encrypt(changeset.params["password"])
           put_change(changeset, :password_digest, hashed_pass)
         else
           changeset
@@ -47,15 +47,9 @@ defmodule EstacionappServer.Web do
       import EstacionappServer.Router.Helpers
       import EstacionappServer.Gettext
 
-      alias EstacionappServer.{Repo, BadRequest}
+      alias EstacionappServer.{Repo, Error, Utils}     
 
-      defp error_messages(changeset) do
-        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-          Enum.reduce(opts, msg, fn {key, value}, acc ->
-            String.replace(acc, "%{#{key}}", to_string(value))
-          end)
-        end)
-      end
+      plug :login_params when var!(action) in [:login]
 
       defp encode(model) do
         model
@@ -65,9 +59,24 @@ defmodule EstacionappServer.Web do
               {location, %{"latitude" => lat, "longitude" => long}}
             end)
           |> elem(1)
-          |> Map.delete(:__meta__)
+          |> Map.drop([:__meta__, :password, :password_digest, :updated_at, :inserted_at])
       end
 
+      def unauthenticated(_, _), do: raise Error.Unauthorized, message: "Invalid credentials."
+
+      defp login_params(conn, _) do
+        try do
+          [user, pass] = conn
+            |> get_req_header("authorization")
+            |> List.first
+            |> String.slice(6..-1)
+            |> Base.decode64!
+            |> String.split(":")
+          Map.put(conn, :params, %{"username" => user, "password" => Utils.Crypto.encrypt(pass)})
+        rescue
+          _ -> raise Error.BadRequest, message: "Error trying to authenticate. Check Authorization header."
+        end
+      end
     end
   end
 
@@ -77,10 +86,10 @@ defmodule EstacionappServer.Web do
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
-
+      import Ecto.Changeset
       import EstacionappServer.Router.Helpers
       import EstacionappServer.ErrorHelpers
-      import EstacionappServer.Gettext
+      import EstacionappServer.Gettext     
     end
   end
 
@@ -94,10 +103,11 @@ defmodule EstacionappServer.Web do
     quote do
       use Phoenix.Channel
 
-      alias EstacionappServer.Repo
       import Ecto
       import Ecto.Query
       import EstacionappServer.Gettext
+      
+      alias EstacionappServer.Repo
     end
   end
 
