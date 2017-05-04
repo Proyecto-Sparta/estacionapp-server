@@ -70,9 +70,10 @@ defmodule EstacionappServer.DriverControllerTest do
   end
 
   test "search with jwt and missing parameters returns :bad_request" do
+    token = jwt()
     assert_error_sent :bad_request, fn -> 
       build_conn() 
-        |> put_req_header("authorization", jwt()) 
+        |> put_req_header("authorization", token)
         |> get("/api/driver/search")
     end             
   end
@@ -106,9 +107,10 @@ defmodule EstacionappServer.DriverControllerTest do
 
   defp valid_search do
     insert(:garage)        
+    token = jwt()
     query_string = Plug.Conn.Query.encode(%{latitude: -34.480666, longitude: -58.622210})
     build_conn() 
-      |> put_req_header("authorization", jwt()) 
+      |> put_req_header("authorization", token) 
       |> get("/api/driver/search?" <> query_string)
   end
 end

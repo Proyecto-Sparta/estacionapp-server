@@ -47,7 +47,7 @@ defmodule EstacionappServer.Web do
       import EstacionappServer.Router.Helpers
       import EstacionappServer.Gettext
 
-      alias EstacionappServer.{Repo, Error, Utils}     
+      alias EstacionappServer.{Repo, Error, Utils}
 
       plug :login_params when var!(action) in [:login]
 
@@ -61,8 +61,6 @@ defmodule EstacionappServer.Web do
           |> elem(1)
           |> Map.drop([:__meta__, :password, :password_digest, :updated_at, :inserted_at])
       end
-
-      def unauthenticated(_, _), do: raise Error.Unauthorized, message: "Invalid credentials."
 
       defp login_params(conn, _) do
         try do
@@ -89,7 +87,7 @@ defmodule EstacionappServer.Web do
       import Ecto.Changeset
       import EstacionappServer.Router.Helpers
       import EstacionappServer.ErrorHelpers
-      import EstacionappServer.Gettext     
+      import EstacionappServer.Gettext
     end
   end
 
@@ -106,7 +104,7 @@ defmodule EstacionappServer.Web do
       import Ecto
       import Ecto.Query
       import EstacionappServer.Gettext
-      
+
       alias EstacionappServer.Repo
     end
   end

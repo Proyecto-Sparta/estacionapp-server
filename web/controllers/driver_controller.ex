@@ -4,19 +4,19 @@ defmodule EstacionappServer.DriverController do
   """
 
   use EstacionappServer.Web, :controller
-  
+
   alias EstacionappServer.{Driver, Garage, Repo, Utils}
 
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search]
   plug :sanitize_search_params when action in [:search]
 
   @doc """
-  Inserts a new Driver. 
+  Inserts a new Driver.
   Returns the inserted driver id or a hash with changeset errors.
   Params:{
     full_name: string,
     username: string,
-    email: string    
+    email: string
   }
   """
   def create(conn, params) do
@@ -30,7 +30,7 @@ defmodule EstacionappServer.DriverController do
   end
 
   @doc """
-  Authenticates a garage. 
+  Authenticates a garage.
   Returns the jwt token inside authorization header.
   Params:{
     username: string
@@ -42,16 +42,16 @@ defmodule EstacionappServer.DriverController do
       |> case do
         nil -> raise Error.Unauthorized, message: "Invalid credentials."
         driver -> authenticate(driver, conn)
-      end        
+      end
   end
 
   @doc """
-  Searches for garages. 
+  Searches for garages.
   Returns an array of garages that satisfies the conditions.
   Querystring: /search?
     latitude=#XXX             [Required]
     longitude=YYY             [Required]
-    max_distance=ZZZ          [Optional] 
+    max_distance=ZZZ          [Optional]
   """
   def search(conn, params) do
     params
@@ -70,9 +70,11 @@ defmodule EstacionappServer.DriverController do
       |> json(%{status: "logged in"})
   end
 
+  def unauthenticated(_, _), do: raise Error.Unauthorized, message: "Invalid credentials."
+
   defp sanitize_search_params(%{:params => params} = conn, _) do
-    try do            
-      %{"latitude" => lat, "longitude" => long} = params            
+    try do
+      %{"latitude" => lat, "longitude" => long} = params
       location = [lat, long]
         |> Enum.map(&Utils.Parse.to_float/1)
         |> Utils.Gis.make_coordinates
@@ -82,7 +84,7 @@ defmodule EstacionappServer.DriverController do
         |> Map.put("location", location)
         |> (&Map.put(conn, :params, &1)).()
     rescue
-      _ -> raise Error.BadRequest, message: "Error parsing search params."      
-    end   
+      _ -> raise Error.BadRequest, message: "Error parsing search params."
+    end
   end
 end
