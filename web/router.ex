@@ -4,7 +4,7 @@ defmodule EstacionappServer.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
-    plug CORSPlug
+    plug CORSPlug, expose: ['authorization']
   end
 
   scope "/api", EstacionappServer do
