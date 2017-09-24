@@ -18,13 +18,13 @@ defmodule EstacionappServer.Driver do
   def changeset(struct, params \\ %{}) do
     fields = [:full_name, :username, :email, :password]
     struct
-    |> cast(params, fields)
-    |> validate_required(fields)
-    |> unique_constraint(:username)
-    |> validate_length(:username, min: 5)
-    |> validate_length(:full_name, min: 5)
-    |> validate_format(:email, ~r/\w+@\w+.\w+/)
-    |> put_digested_password
+      |> cast(params, fields)
+      |> validate_required(fields)
+      |> unique_constraint(:username)
+      |> validate_length(:username, min: 5)
+      |> validate_length(:full_name, min: 5)
+      |> validate_format(:email, ~r/\w+@\w+.\w+/)
+      |> put_digested_password
   end
 
   def authenticate(%{"username" => username, "password" => pass}) do
