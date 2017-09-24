@@ -80,8 +80,7 @@ defmodule EstacionappServer.DriverControllerTest do
 
   test "search with jwt returns :ok and garages" do
     resp = valid_search()        
-    garage = %{"username" => "garageuser123",
-               "id" => Garage |> last |> Repo.one |> Map.get(:id), 
+    garage = %{"id" => Garage |> last |> Repo.one |> Map.get(:id), 
                "garage_name" => "Torcuato Parking",
                "email" => "tparking@gmail.com",
                "location" => %{"latitude" => -34.480666, "longitude" => -58.622210},

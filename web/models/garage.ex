@@ -4,7 +4,7 @@ defmodule EstacionappServer.Garage do
   import Geo.PostGIS
   import EstacionappServer.Utils.Gis
 
-  alias EstacionappServer.Repo
+  alias EstacionappServer.{Repo, GarageLayout}
   
   schema "garages" do
     field :username, :string
@@ -12,6 +12,8 @@ defmodule EstacionappServer.Garage do
     field :garage_name, :string
     field :email, :string
     field :location, Geo.Point
+
+    has_many :layouts, GarageLayout
 
     field :distance, :integer, virtual: true
     field :password, :string, virtual: true
@@ -25,14 +27,15 @@ defmodule EstacionappServer.Garage do
   def changeset(struct, params \\ %{}) do
     fields = [:username, :email, :garage_name, :location, :password]
     struct
-    |> cast(params, fields)
-    |> validate_required(fields)
-    |> unique_constraint(:username)
-    |> validate_length(:username, min: 5)
-    |> validate_length(:garage_name, min: 5)
-    |> validate_length(:password, min: 5)
-    |> validate_format(:email, ~r/\w+@\w+.\w+/)
-    |> put_digested_password
+      |> cast(params, fields)
+      |> cast_assoc(:layouts)
+      |> validate_required(fields)
+      |> unique_constraint(:username)
+      |> validate_length(:username, min: 5)
+      |> validate_length(:garage_name, min: 5)
+      |> validate_length(:password, min: 5)
+      |> validate_format(:email, ~r/\w+@\w+.\w+/)
+      |> put_digested_password
   end
 
   @doc """
@@ -60,7 +63,8 @@ defmodule EstacionappServer.Garage do
   end
 
   defp select_distance(queryable, location) do
-    from garage in queryable,
-      select: %{garage | distance: st_distance_spheroid(^location, garage.location)}
+    from garage in queryable, 
+    select: map(garage, [:id, :email, :garage_name, :location]),
+    select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
   end
 end

@@ -17,6 +17,14 @@ defmodule EstacionappServer.GarageTest do
     assert changeset.valid?
   end
 
+  test "creates a garage with a given layout" do
+    layouts_params = [%{floor_level: 0}, %{floor_level: 1}]
+    changeset = %Garage{}
+      |> Garage.changeset(@valid_attrs)
+      |> Garage.changeset(%{layouts: layouts_params})  
+    assert changeset.valid?
+  end
+
   test "changeset with invalid attributes" do
     changeset = Garage.changeset(%Garage{}, @invalid_attrs)
     refute changeset.valid?
