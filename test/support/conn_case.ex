@@ -20,12 +20,12 @@ defmodule EstacionappServer.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
 
-      alias EstacionappServer.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-
       import EstacionappServer.Router.Helpers
+
+      alias EstacionappServer.Repo
 
       # The default endpoint for testing
       @endpoint EstacionappServer.Endpoint

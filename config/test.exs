@@ -17,3 +17,7 @@ config :estacionapp_server, EstacionappServer.Repo,
   database: "estacionapp_server_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+  config :cipher, keyphrase: "testiekeyphraseforcipher",
+    ivphrase: "testieivphraseforcipher",
+    magic_token: "magictoken"

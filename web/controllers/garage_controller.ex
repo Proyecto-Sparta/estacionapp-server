@@ -4,11 +4,11 @@ defmodule EstacionappServer.GarageController do
   """
 
   use EstacionappServer.Web, :controller
-  
+
   alias EstacionappServer.{Garage, Repo, Utils}
 
   @doc """
-  Inserts a new Garage. 
+  Inserts a new Garage.
   Returns the inserted garage id or a hash with changeset errors.
   Params:{
     location: [lat, long],
@@ -19,25 +19,17 @@ defmodule EstacionappServer.GarageController do
   """
   def create(conn, params) do
     params = Map.update(params, "location", nil, &Utils.Gis.make_coordinates/1)
-    %Garage{}
+    garage = %Garage{}
       |> Garage.changeset(params)
-      |> Repo.insert
-      |> case do
-        {:ok, garage} ->
-          conn
-            |> put_status(:created)
-            |> json(%{id: garage.id})
-
-        {:error, changeset} ->
-          conn
-            |> put_status(:unprocessable_entity)
-            |> json(error_messages(changeset))
-            |> halt
-      end
+      |> Repo.insert!
+      
+    conn
+      |> put_status(:created)
+      |> json(%{id: garage.id})      
   end
 
   @doc """
-  Authenticates a garage. 
+  Authenticates a garage.
   Returns the jwt token inside authorization header.
   Params:{
     username: string
@@ -47,10 +39,10 @@ defmodule EstacionappServer.GarageController do
     params
       |> Garage.authenticate
       |> case do
-        nil -> resp_unauthorized(conn, "invalid login credentials")
+        nil -> raise Error.Unauthorized, message: "Invalid credentials."
         garage -> authenticate(garage, conn)
-      end
-  end
+      end   
+  end  
 
   defp authenticate(garage, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
@@ -60,13 +52,5 @@ defmodule EstacionappServer.GarageController do
       |> put_resp_header("authorization", "Bearer #{jwt}")
       |> put_status(:accepted)
       |> json(%{status: "logged in"})
-  end
-
-  def unauthenticated(conn, _params), do: resp_unauthorized(conn, "login needed")
-
-  defp resp_unauthorized(conn, message) do
-    conn
-      |> put_status(:unauthorized)
-      |> json(%{status: message})
   end
 end

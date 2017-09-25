@@ -24,9 +24,17 @@ defmodule EstacionappServer.Web do
       import Ecto.Changeset
       import Ecto.Query
 
-      alias EstacionappServer.Repo
+      alias EstacionappServer.{Repo, Utils, Error}
       alias __MODULE__
 
+      defp put_digested_password(changeset) do
+        if Map.has_key?(changeset.changes, :password) do
+          hashed_pass = Utils.Crypto.encrypt(changeset.params["password"])
+          put_change(changeset, :password, hashed_pass)
+        else
+          changeset
+        end
+      end
     end
   end
 
@@ -34,30 +42,38 @@ defmodule EstacionappServer.Web do
     quote do
       use Phoenix.Controller
 
-      alias EstacionappServer.Repo
       import Ecto
       import Ecto.Query
-
       import EstacionappServer.Router.Helpers
       import EstacionappServer.Gettext
 
-      defp error_messages(changeset) do
-        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-          Enum.reduce(opts, msg, fn {key, value}, acc ->
-            String.replace(acc, "%{#{key}}", to_string(value))
-          end)
-        end)
-      end
-      
+      alias EstacionappServer.{Repo, Error, Utils}
+
+      plug :login_params when var!(action) in [:login]
+
       defp encode(model) do
         model
           |> Map.update!(:location, &Geo.JSON.encode/1)
-          |> Map.get_and_update(:location, fn location -> 
+          |> Map.get_and_update(:location, fn location ->
               [long, lat] = location["coordinates"]
-              {location, %{"latitude" => lat, "longitude" => long}} 
+              {location, %{"latitude" => lat, "longitude" => long}}
             end)
           |> elem(1)
-          |> Map.delete(:__meta__)
+          |> Map.drop([:__meta__, :password, :updated_at, :inserted_at])
+      end
+
+      defp login_params(conn, _) do
+        try do
+          [user, pass] = conn
+            |> get_req_header("authorization")
+            |> List.first
+            |> String.slice(6..-1)
+            |> Base.decode64!
+            |> String.split(":")
+          Map.put(conn, :params, %{"username" => user, "password" => pass})
+        rescue
+          _ -> raise Error.BadRequest, message: "Error trying to authenticate. Check Authorization header."
+        end
       end
     end
   end
@@ -68,7 +84,7 @@ defmodule EstacionappServer.Web do
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
-
+      import Ecto.Changeset
       import EstacionappServer.Router.Helpers
       import EstacionappServer.ErrorHelpers
       import EstacionappServer.Gettext
@@ -85,10 +101,11 @@ defmodule EstacionappServer.Web do
     quote do
       use Phoenix.Channel
 
-      alias EstacionappServer.Repo
       import Ecto
       import Ecto.Query
       import EstacionappServer.Gettext
+
+      alias EstacionappServer.Repo
     end
   end
 

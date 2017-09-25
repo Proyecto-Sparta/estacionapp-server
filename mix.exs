@@ -38,7 +38,9 @@ defmodule EstacionappServer.Mixfile do
      {:cowboy, "~> 1.0"},
      {:geo, "~> 1.4"},
      {:guardian, "~> 0.14.2"},
-     {:ex_machina, "~> 2.0", only: :test}]
+     {:ex_machina, "~> 2.0", only: :test},
+     {:cipher, ">= 1.3.0"},
+     {:cors_plug, "~> 1.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
@@ -48,8 +50,8 @@ defmodule EstacionappServer.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-     "ecto.reset": ["ecto.drop", "ecto.setup"],
+    ["ecto.setup": ["ecto.reset", "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.create", "ecto.migrate"],
      "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end

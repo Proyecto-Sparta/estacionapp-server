@@ -4,6 +4,7 @@ defmodule EstacionappServer.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug CORSPlug, expose: ['authorization']
   end
 
   scope "/api", EstacionappServer do
@@ -18,6 +19,7 @@ defmodule EstacionappServer.Router do
     scope "/garage" do
       post "/", GarageController, :create
       get "/login", GarageController, :login
+      options "/login", GarageController, :options
     end
   end
 end

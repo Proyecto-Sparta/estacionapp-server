@@ -1,19 +1,31 @@
 defmodule EstacionappServer.GarageTest do
   use EstacionappServer.ModelCase
   
-  alias EstacionappServer.{Garage, Utils}
+  alias EstacionappServer.{Garage, GarageLayout, Utils}
 
   import EstacionappServer.Factory  
 
   @valid_attrs %{email: "medrano950@gmail.com",
                  garage_name: "Medrano Parking",
                  username: "medranoParking",
-                 location: Utils.Gis.make_coordinates([0,0]) }
+                 location: Utils.Gis.make_coordinates([0,0]),
+                 password: "password"}
+
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
     changeset = Garage.changeset(%Garage{}, @valid_attrs)
     assert changeset.valid?
+  end
+
+  test "creates a garage with a given layout" do
+    layouts_params = [%{floor_level: 0, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}]
+    garage = Repo.preload(insert(:garage), :layouts)
+    garage
+      |> Garage.changeset(%{layouts: layouts_params})
+      |> Repo.update
+    layouts_count = Repo.all(GarageLayout) |> Enum.count
+    assert layouts_count == 1
   end
 
   test "changeset with invalid attributes" do

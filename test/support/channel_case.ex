@@ -20,11 +20,11 @@ defmodule EstacionappServer.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
-      alias EstacionappServer.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
+      alias EstacionappServer.Repo
 
       # The default endpoint for testing
       @endpoint EstacionappServer.Endpoint

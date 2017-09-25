@@ -29,3 +29,10 @@ config :estacionapp_server, EstacionappServer.Repo,
   database: "estacionapp_server_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :cipher, keyphrase: "testiekeyphraseforcipher",
+  ivphrase: "testieivphraseforcipher",
+  magic_token: "magictoken"
+
+config :cors_plug, CORSPlug,
+  origin: ['http://localhost:4200']
