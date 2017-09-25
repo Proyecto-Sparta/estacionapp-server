@@ -8,7 +8,7 @@ defmodule EstacionappServer.Garage do
   
   schema "garages" do
     field :username, :string
-    field :password_digest, :string
+    field :password, :string
     field :garage_name, :string
     field :email, :string
     field :location, Geo.Point
@@ -16,7 +16,6 @@ defmodule EstacionappServer.Garage do
     has_many :layouts, GarageLayout
 
     field :distance, :integer, virtual: true
-    field :password, :string, virtual: true
 
     timestamps()
   end
@@ -50,7 +49,7 @@ defmodule EstacionappServer.Garage do
 
   def authenticate(%{"username" => username, "password" => pass}) do
     Garage
-      |> where(username: ^username, password_digest: ^pass)
+      |> where(username: ^username, password: ^pass)
       |> Repo.one
   end
 

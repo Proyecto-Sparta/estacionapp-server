@@ -3,11 +3,9 @@ defmodule EstacionappServer.Driver do
 
   schema "drivers" do
     field :username, :string
-    field :password_digest, :string
+    field :password, :string
     field :full_name, :string
     field :email, :string
-
-    field :password, :string, virtual: true
 
     timestamps()
   end
@@ -29,7 +27,7 @@ defmodule EstacionappServer.Driver do
 
   def authenticate(%{"username" => username, "password" => pass}) do
     Driver
-      |> where(username: ^username, password_digest: ^pass)
+      |> where(username: ^username, password: ^pass)
       |> Repo.one
   end
 end

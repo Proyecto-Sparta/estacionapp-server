@@ -14,7 +14,7 @@ alias EstacionappServer.{Repo, Garage, Driver, Utils}
 
 create_garage = fn name, coordinates ->
   %Garage{username: name,
-          password_digest: Utils.Crypto.encrypt("password"),
+          password: "password",
           garage_name: name,
           email: name <> "@gmail.com",
           location: Utils.Gis.make_coordinates(coordinates)}
@@ -22,7 +22,7 @@ end
 
 create_driver = fn name ->
   %Driver{username: name,
-          password_digest: Utils.Crypto.encrypt("password"),
+          password: "password",
           full_name: name,
           email: name <> "@gmail.com"}
 end

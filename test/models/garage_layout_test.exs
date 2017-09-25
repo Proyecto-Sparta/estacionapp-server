@@ -3,11 +3,12 @@ defmodule EstacionappServer.GarageLayoutTest do
 
   alias EstacionappServer.GarageLayout
 
-  @valid_attrs %{floor_level: 1}
+  @valid_attrs %{floor_level: 1, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
     changeset = GarageLayout.changeset(%GarageLayout{}, @valid_attrs)
+    EstacionappServer.Repo.insert!(changeset)
     assert changeset.valid?
   end
 

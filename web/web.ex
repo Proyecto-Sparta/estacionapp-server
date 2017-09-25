@@ -28,9 +28,9 @@ defmodule EstacionappServer.Web do
       alias __MODULE__
 
       defp put_digested_password(changeset) do
-        if changeset.valid? do
+        if Map.has_key?(changeset.changes, :password) do
           hashed_pass = Utils.Crypto.encrypt(changeset.params["password"])
-          put_change(changeset, :password_digest, hashed_pass)
+          put_change(changeset, :password, hashed_pass)
         else
           changeset
         end
@@ -59,7 +59,7 @@ defmodule EstacionappServer.Web do
               {location, %{"latitude" => lat, "longitude" => long}}
             end)
           |> elem(1)
-          |> Map.drop([:__meta__, :password, :password_digest, :updated_at, :inserted_at])
+          |> Map.drop([:__meta__, :password, :updated_at, :inserted_at])
       end
 
       defp login_params(conn, _) do
@@ -70,7 +70,7 @@ defmodule EstacionappServer.Web do
             |> String.slice(6..-1)
             |> Base.decode64!
             |> String.split(":")
-          Map.put(conn, :params, %{"username" => user, "password" => Utils.Crypto.encrypt(pass)})
+          Map.put(conn, :params, %{"username" => user, "password" => pass})
         rescue
           _ -> raise Error.BadRequest, message: "Error trying to authenticate. Check Authorization header."
         end
