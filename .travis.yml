@@ -5,8 +5,11 @@ matrix:
       elixir: 1.4.0
 dist: trusty
 sudo: false
-services:
-  - postgresql  
+addons:
+  postgresql: "9.5"
+  apt:
+    packages:
+      - postgresql-9.5-postgis-2.3
 before_script:  
   - psql -c "CREATE USER estacionapp WITH PASSWORD 'estacionapp' SUPERUSER;" -U postgres
   - psql -U postgres -c "CREATE EXTENSION postgis"
