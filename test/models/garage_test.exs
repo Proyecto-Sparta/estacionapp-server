@@ -3,7 +3,7 @@ defmodule EstacionappServer.GarageTest do
   
   alias EstacionappServer.{Garage, GarageLayout, Utils}
 
-  import EstacionappServer.Factory  
+  import EstacionappServer.Factory
 
   @valid_attrs %{email: "medrano950@gmail.com",
                  garage_name: "Medrano Parking",
@@ -19,11 +19,13 @@ defmodule EstacionappServer.GarageTest do
   end
 
   test "creates a garage with a given layout" do
-    layouts_params = [%{floor_level: 0, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}]
+    layouts_params = %{floor_level: 1, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}
     garage = Repo.preload(insert(:garage), :layouts)
+    
     garage
-      |> Garage.changeset(%{layouts: layouts_params})
-      |> Repo.update
+      |> Garage.changeset(%{layouts: [layouts_params]})
+      |> Repo.update!
+
     layouts_count = Repo.all(GarageLayout) |> Enum.count
     assert layouts_count == 1
   end

@@ -17,7 +17,7 @@ defmodule EstacionappServer.GarageLayout do
   def changeset(struct, params \\ %{}) do
     fields = [:floor_level, :parking_spaces]
     struct
-      |> cast(params, [:garage_id | fields])
+      |> cast(params, fields)
       |> validate_required(fields)
       |> assoc_constraint(:garage, required: true)
   end

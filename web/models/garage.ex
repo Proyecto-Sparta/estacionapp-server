@@ -13,7 +13,7 @@ defmodule EstacionappServer.Garage do
     field :email, :string
     field :location, Geo.Point
 
-    has_many :layouts, GarageLayout
+    has_many :layouts, GarageLayout, on_replace: :delete
 
     field :distance, :integer, virtual: true
 
