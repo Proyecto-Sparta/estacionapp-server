@@ -7,6 +7,7 @@ defmodule EstacionappServer.Repo.Migrations.CreateGarage do
       add :password, :string
       add :name, :string
       add :email, :string
+      add :pricing, :map
 
       timestamps()
     end

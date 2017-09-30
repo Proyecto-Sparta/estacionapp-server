@@ -5,8 +5,8 @@ defmodule EstacionappServer.GarageLayout do
 
   schema "garage_layouts" do
     field :floor_level, :integer
-    field :parking_spaces, Geo.GeometryCollection
     
+    embeds_many :parking_spaces, GarageLayout.ParkingSpace
     belongs_to :garage, Garage
 
     timestamps()
@@ -16,10 +16,27 @@ defmodule EstacionappServer.GarageLayout do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-    fields = [:floor_level, :parking_spaces]
+    fields = [:floor_level]
     struct
       |> cast(params, fields)
       |> validate_required(fields)
+      |> cast_embed(:parking_spaces)
       |> assoc_constraint(:garage, required: true)
+  end
+
+  defmodule ParkingSpace do
+    use EstacionappServer.Web, :model
+    
+    embedded_schema do
+      field :lat, :float
+      field :long, :float
+      field :is_occupied, :boolean, default: false
+    end
+  
+    def changeset(struct, params \\ %{}) do
+      fields = [:lat, :long, :is_occupied]
+      struct
+        |> cast(params, fields)
+    end
   end
 end

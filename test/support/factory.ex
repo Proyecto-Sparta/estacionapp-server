@@ -4,7 +4,8 @@ defmodule EstacionappServer.Factory do
   alias EstacionappServer.{Garage, Driver, Utils}
 
     def garage_factory do
-      %Garage{username: "garageuser123",
+      %Garage{
+        username: "garageuser123",
         name: "Torcuato Parking",
         email: "tparking@gmail.com",
         location: Utils.Gis.make_coordinates([-34.480666, -58.622210]),
@@ -18,7 +19,8 @@ defmodule EstacionappServer.Factory do
     end
 
     def driver_factory do
-      %Driver{username: "joValim",
+      %Driver{
+        username: "joValim",
         full_name: "Jose Valim",
         email: "jvalim@plataformatec.br",
         password: "password"

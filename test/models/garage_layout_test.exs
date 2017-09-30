@@ -3,7 +3,7 @@ defmodule EstacionappServer.GarageLayoutTest do
 
   alias EstacionappServer.GarageLayout
 
-  @valid_attrs %{floor_level: 1, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}
+  @valid_attrs %{floor_level: 1, parking_spaces: [%{lat: 0, long: 0}]}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

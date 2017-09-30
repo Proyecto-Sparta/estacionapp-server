@@ -19,7 +19,7 @@ defmodule EstacionappServer.GarageTest do
   end
 
   test "creates a garage with a given layout" do
-    layouts_params = %{floor_level: 1, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}
+    layouts_params = %{floor_level: 1, parking_spaces: [%{lat: 0, long: 0}]}
     insert(:garage)
       |> Repo.preload(:layouts)
       |> Garage.changeset(%{layouts: [layouts_params]})

@@ -75,23 +75,23 @@ defmodule EstacionappServer.Garage do
     from garage in queryable,
       select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
   end
-end
 
-defmodule EstacionappServer.Garage.Pricing do
-  use EstacionappServer.Web, :model
+  defmodule Pricing do
+    use EstacionappServer.Web, :model
+    
+    embedded_schema do
+      field :car, :integer, default: 0
+      field :bike, :integer, default: 0
+      field :pickup, :integer, default: 0
+    end
   
-  embedded_schema do
-    field :car, :integer, default: 0
-    field :bike, :integer, default: 0
-    field :pickup, :integer, default: 0
-  end
-
-  def changeset(struct, params \\ %{}) do
-    fields = [:car, :bike, :pickup]
-    struct
-      |> cast(params, fields)
-      |> validate_number(:car, greater_than_or_equal_to: 0)
-      |> validate_number(:bike, greater_than_or_equal_to: 0)
-      |> validate_number(:pickup, greater_than_or_equal_to: 0)
+    def changeset(struct, params \\ %{}) do
+      fields = [:car, :bike, :pickup]
+      struct
+        |> cast(params, fields)
+        |> validate_number(:car, greater_than_or_equal_to: 0)
+        |> validate_number(:bike, greater_than_or_equal_to: 0)
+        |> validate_number(:pickup, greater_than_or_equal_to: 0)
+    end
   end
 end
