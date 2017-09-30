@@ -1,19 +1,21 @@
 defmodule EstacionappServer.GarageControllerTest do
   use EstacionappServer.ConnCase
 
-  alias EstacionappServer.Garage
+  alias EstacionappServer.{Garage, Endpoint}
 
   import EstacionappServer.Factory
 
   test "create with incomplete params returns :unprocessable_entity" do
     assert_error_sent :unprocessable_entity, fn ->
-      build_conn() |> post("/api/garage")
+      build_conn() 
+        |> post(garage_path(Endpoint, :create))
     end    
   end
 
   test "create with incomplete params returns the errors of the changeset" do
     {_, _, resp} = assert_error_sent :unprocessable_entity, fn ->
-      build_conn() |> post("/api/garage")
+      build_conn() 
+        |> post(garage_path(Endpoint, :create))
     end
 
     assert Poison.decode!(resp) ==  %{"errors" => %{"detail" => %{"email" => ["can't be blank"], 
@@ -34,7 +36,8 @@ defmodule EstacionappServer.GarageControllerTest do
 
   test "login without authorization returns :bad_request" do
     assert_error_sent :bad_request, fn ->
-      build_conn() |> get("/api/garage/login")
+      build_conn() 
+      |> get(garage_path(Endpoint, :login))
     end
   end
 
@@ -42,7 +45,7 @@ defmodule EstacionappServer.GarageControllerTest do
     assert_error_sent :bad_request, fn ->
       build_conn()
         |> put_req_header("authorization", "foobar")
-        |> get("/api/garage/login")
+        |> get(garage_path(Endpoint, :login))
     end
   end
 
@@ -50,7 +53,7 @@ defmodule EstacionappServer.GarageControllerTest do
     assert_error_sent :unauthorized, fn ->
       build_conn() 
         |> put_req_header("authorization", "Basic am9zZTpqb3NlMTIz")
-        |> get("/api/garage/login")
+        |> get(garage_path(Endpoint, :login))
     end       
   end
 
@@ -66,7 +69,8 @@ defmodule EstacionappServer.GarageControllerTest do
 
   test "search without jwt returns :unauthorized" do
     assert_error_sent :unauthorized, fn ->
-      build_conn() |> get("/api/garage/search?latitude=0&longitude=0")
+      build_conn() 
+        |> get(garage_path(Endpoint, :search, latitude: 0, longuitude: 0))
     end             
   end
 
@@ -75,7 +79,7 @@ defmodule EstacionappServer.GarageControllerTest do
     assert_error_sent :bad_request, fn -> 
       build_conn() 
         |> put_req_header("authorization", token)
-        |> get("/api/garage/search")
+        |> get(garage_path(Endpoint, :search))
     end             
   end
 
@@ -102,7 +106,7 @@ defmodule EstacionappServer.GarageControllerTest do
 
   defp valid_create do
     build_conn()
-      |> post("/api/garage",
+      |> post(garage_path(Endpoint, :create),
               username: "medranogarage950",
               email: "medranogarage950@gmail.com",
               name: "Medrano 950",
@@ -114,7 +118,7 @@ defmodule EstacionappServer.GarageControllerTest do
     insert(:garage)
     build_conn()
       |> put_req_header("authorization", "Basic " <> Base.encode64("garageuser123:password"))
-      |> get("api/garage/login")
+      |> get(garage_path(Endpoint, :login))
   end
 
   defp valid_search do          
@@ -122,7 +126,7 @@ defmodule EstacionappServer.GarageControllerTest do
     query_string = Plug.Conn.Query.encode(%{latitude: -34.480666, longitude: -58.622210})
     build_conn() 
       |> put_req_header("authorization", token) 
-      |> get("/api/garage/search?" <> query_string)
+      |> get(garage_path(Endpoint, :search) <> "?" <> query_string)
   end
 
   defp last_id, do: Garage |> last |> Repo.one |> Map.get(:id)
