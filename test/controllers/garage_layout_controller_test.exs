@@ -66,7 +66,6 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
   end    
 
   test "create with wrong params returns :unprocessable_entity", jwt do
-    
     assert_error_sent :unprocessable_entity, fn ->    
       build_conn() 
         |> put_req_header("authorization", jwt.token) 
@@ -108,6 +107,17 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
     assert response(delete_reponse, 200) =~ ""      
     assert Repo.aggregate(GarageLayout, :count, :id) == 0
   end    
+
+  test "delete on aforaneous layout fails with :not_found", jwt do
+    garage = Repo.one(Garage)
+    insert(:garage_layout, garage_id: garage.id)
+
+    assert_error_sent :not_found, fn ->    
+      build_conn() 
+        |> put_req_header("authorization", jwt.token) 
+        |> delete(garage_layout_path(@endpoint, :delete, -10))
+    end
+  end
 
   test "delete without authorization fails with :unauthorized" do
     assert_error_sent :unauthorized, fn ->    
