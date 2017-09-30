@@ -6,6 +6,7 @@ defmodule EstacionappServer.GarageLayout do
   schema "garage_layouts" do
     field :floor_level, :integer
     field :parking_spaces, Geo.GeometryCollection
+    
     belongs_to :garage, Garage
 
     timestamps()

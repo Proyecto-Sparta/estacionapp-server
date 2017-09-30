@@ -2,10 +2,10 @@ defmodule EstacionappServer.Driver do
   use EstacionappServer.Web, :model
 
   schema "drivers" do
-    field :username, :string
-    field :password, :string
-    field :full_name, :string
-    field :email, :string
+    field :username
+    field :password
+    field :full_name
+    field :email
 
     timestamps()
   end
