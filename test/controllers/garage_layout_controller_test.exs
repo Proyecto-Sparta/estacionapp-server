@@ -64,4 +64,36 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
         |> patch(garage_layout_path(@endpoint, :update, 5000))
     end
   end    
+
+  test "create with wrong params returns :unprocessable_entity", jwt do
+    
+    assert_error_sent :unprocessable_entity, fn ->    
+      build_conn() 
+        |> put_req_header("authorization", jwt.token) 
+        |> post(garage_layout_path(@endpoint, :create))
+    end
+  end    
+
+  test "create with wrong params returns changeset errors", jwt do
+    
+    {_, _, response} = assert_error_sent :unprocessable_entity, fn ->    
+      build_conn() 
+        |> put_req_header("authorization", jwt.token) 
+        |> post(garage_layout_path(@endpoint, :create))
+    end
+
+    assert Poison.decode!(response) ==  %{"errors" => 
+                                          %{"detail" => %{
+                                              "floor_level" => ["can't be blank"], 
+                                              "garage_id" => ["can't be blank"]
+                                            }
+                                          }
+                                        }
+  end    
+
+  test "create without authorization fails with :unauthorized" do
+    assert_error_sent :unauthorized, fn ->    
+      build_conn() |> post(garage_layout_path(@endpoint, :create))
+    end
+  end
 end
