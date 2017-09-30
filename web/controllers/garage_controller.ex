@@ -3,7 +3,8 @@ defmodule EstacionappServer.GarageController do
      
   alias EstacionappServer.{Garage, Repo, Utils}
 
-  plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search]
+  plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search, :update]
+  plug Guardian.Plug.LoadResource, %{ensure: true} when action in [:update]
   plug :sanitize_search_params when action in [:search]
   
   @moduledoc """
@@ -12,13 +13,7 @@ defmodule EstacionappServer.GarageController do
 
   @doc """
   Inserts a new Garage.
-  Returns the inserted garage id or a hash with changeset errors.
-  Params:{
-    location: [lat, long],
-    username: string,
-    email: string,
-    name: string
-  }
+  Returns the inserted garage id or a hash with changeset errors.  
   """
   def create(conn, params) do
     params = Map.update(params, "location", nil, &Utils.Gis.make_coordinates/1)
@@ -28,6 +23,26 @@ defmodule EstacionappServer.GarageController do
       
     conn
       |> put_status(:created)
+      |> json(%{id: garage.id})      
+  end
+
+  @doc """
+  Updates an existing.
+  Returns the inserted garage id or a hash with changeset errors.
+  """
+  def update(conn, %{"id" => garage_id} = params) do
+    {garage_id, _} = Integer.parse(garage_id)
+
+    current_garage = Guardian.Plug.current_resource(conn)
+    
+    if current_garage.id != garage_id, do: raise Error.NotFound
+
+    garage = current_garage
+      |> Garage.changeset(params)
+      |> Repo.update!
+      
+    conn
+      |> put_status(:ok)
       |> json(%{id: garage.id})      
   end
 

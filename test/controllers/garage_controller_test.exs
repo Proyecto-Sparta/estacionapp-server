@@ -34,6 +34,28 @@ defmodule EstacionappServer.GarageControllerTest do
     assert json_response(valid_create(), :created) == %{"id" => last_id()}
   end
 
+  test "update changes an existing model" do
+    token = jwt()
+    %{:id => garage_id} = Repo.one(Garage)
+    response = build_conn()
+      |> put_req_header("authorization", token) 
+      |> patch(garage_path(Endpoint, :update, garage_id, email: "yo@internet.com"))
+    
+    garage = Repo.one(Garage)
+    assert json_response(response, :ok) == %{"id" => garage.id}
+    assert garage.email == "yo@internet.com"
+  end
+
+  test "update fails if the id is not correct" do
+    token = jwt()
+
+    assert_error_sent :not_found, fn ->
+      build_conn()
+        |> put_req_header("authorization", token) 
+        |> patch(garage_path(Endpoint, :update, 123456, email: "yo@internet.com"))
+    end
+  end
+
   test "login without authorization returns :bad_request" do
     assert_error_sent :bad_request, fn ->
       build_conn() 

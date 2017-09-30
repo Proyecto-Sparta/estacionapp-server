@@ -10,14 +10,14 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias EstacionappServer.{Repo, Garage, Driver, Utils}
+alias EstacionappServer.{Repo, Garage, Driver}
 
 create_garage = fn name, coordinates ->
   %Garage{username: name,
           password: "password",
           name: name,
           email: name <> "@gmail.com",
-          location: Utils.Gis.make_coordinates(coordinates)}
+          location: coordinates
 end
 
 create_driver = fn name ->

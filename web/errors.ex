@@ -26,4 +26,18 @@ defmodule EstacionappServer.Error do
       %BadRequest{message: Keyword.fetch!(opts, :message)}    
     end
   end
+
+  defmodule NotFound do
+    @moduledoc """
+    Exception raised on not found resources.
+    status 404 = :not_found
+    """
+
+    defexception message: "Not found",
+                 plug_status: 404
+
+    def exception(_opts) do    
+      %NotFound{}    
+    end
+  end
 end

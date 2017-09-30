@@ -4,7 +4,7 @@ defmodule EstacionappServer.Garage do
   import Geo.PostGIS
   import EstacionappServer.Utils.Gis
 
-  alias EstacionappServer.{Repo, GarageLayout, Garage}
+  alias EstacionappServer.{Repo, GarageLayout, Garage, Utils}
   
   schema "garages" do
     field :username
@@ -35,8 +35,16 @@ defmodule EstacionappServer.Garage do
       |> validate_length(:password, min: 5)
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
+      |> put_location
       |> cast_assoc(:layouts)
       |> cast_embed(:pricing)
+  end
+
+  defp put_location(changeset) do
+    location = changeset
+      |> get_change(:location)
+      |> Utils.Gis.make_coordinates
+    put_change(changeset, :location, location)
   end
 
   @doc """

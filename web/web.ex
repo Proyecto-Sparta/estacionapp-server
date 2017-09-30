@@ -51,17 +51,6 @@ defmodule EstacionappServer.Web do
 
       plug :login_params when var!(action) in [:login]
 
-      defp encode(model) do
-        model
-          |> Map.update!(:location, &Geo.JSON.encode/1)
-          |> Map.get_and_update(:location, fn location ->
-              [long, lat] = location["coordinates"]
-              {location, %{"latitude" => lat, "longitude" => long}}
-            end)
-          |> elem(1)
-          |> Map.drop([:__meta__, :password, :updated_at, :inserted_at])
-      end
-
       defp login_params(conn, _) do
         try do
           [user, pass] = conn

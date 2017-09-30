@@ -16,8 +16,9 @@ defmodule EstacionappServer.Router do
     end
     
     scope "/garage" do
-      post "/", GarageController, :create
       get "/login", GarageController, :login
+      post "/", GarageController, :create
+      patch "/:id", GarageController, :update
       get "/search", GarageController, :search
       options "/login", GarageController, :options
     end
