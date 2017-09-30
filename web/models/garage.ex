@@ -36,7 +36,6 @@ defmodule EstacionappServer.Garage do
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
       |> put_location
-      |> cast_assoc(:layouts)
       |> cast_embed(:pricing)
   end
 

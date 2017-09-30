@@ -64,6 +64,8 @@ defmodule EstacionappServer.Web do
           _ -> raise Error.BadRequest, message: "Error trying to authenticate. Check Authorization header."
         end
       end
+
+      def unauthenticated(_, _), do: raise Error.Unauthorized, message: "Invalid credentials."
     end
   end
 

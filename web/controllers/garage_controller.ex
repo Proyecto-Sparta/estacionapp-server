@@ -4,7 +4,7 @@ defmodule EstacionappServer.GarageController do
   alias EstacionappServer.{Garage, Repo, Utils}
 
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search, :update]
-  plug Guardian.Plug.LoadResource, %{ensure: true} when action in [:update]
+  plug Guardian.Plug.LoadResource when action in [:update]
   plug :sanitize_search_params when action in [:search]
   
   @moduledoc """
@@ -76,8 +76,6 @@ defmodule EstacionappServer.GarageController do
         garage -> authenticate(garage, conn)
       end   
   end  
-
-  def unauthenticated(_, _), do: raise Error.Unauthorized, message: "Invalid credentials."
 
   defp authenticate(garage, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
