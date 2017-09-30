@@ -23,6 +23,6 @@ defmodule EstacionappServer.Router do
       options "/login", GarageController, :options
     end
 
-    resources "/layouts", GarageLayoutController, only: [:index, :create, :update]
+    resources "/layouts", GarageLayoutController, only: [:index, :create, :update, :delete]
   end
 end
