@@ -96,4 +96,22 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
       build_conn() |> post(garage_layout_path(@endpoint, :create))
     end
   end
+
+  test "delete with wrong params returns changeset errors", jwt do
+    garage = Repo.one(Garage)
+    layout = insert(:garage_layout, garage_id: garage.id)  
+    
+    delete_reponse = build_conn() 
+      |> put_req_header("authorization", jwt.token) 
+      |> delete(garage_layout_path(@endpoint, :delete, layout.id))
+
+    assert response(delete_reponse, 200) =~ ""      
+    assert Repo.aggregate(GarageLayout, :count, :id) == 0
+  end    
+
+  test "delete without authorization fails with :unauthorized" do
+    assert_error_sent :unauthorized, fn ->    
+      build_conn() |> delete(garage_layout_path(@endpoint, :delete, 1))
+    end
+  end
 end

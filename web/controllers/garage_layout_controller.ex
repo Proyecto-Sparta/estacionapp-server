@@ -34,7 +34,10 @@ defmodule EstacionappServer.GarageLayoutController do
   end  
 
   def delete(conn, params) do
-
+    conn.assigns.layout
+      |> Repo.delete!
+    
+    send_resp(conn, :ok, "")  
   end 
 
   defp ensure_ownership(%{params: %{"id" => layout_id}} = conn, _) do
