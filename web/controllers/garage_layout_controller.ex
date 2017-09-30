@@ -33,7 +33,7 @@ defmodule EstacionappServer.GarageLayoutController do
     send_resp(conn, :ok, "")  
   end  
 
-  def delete(conn, params) do
+  def delete(conn, _params) do
     conn.assigns.layout
       |> Repo.delete!
     
