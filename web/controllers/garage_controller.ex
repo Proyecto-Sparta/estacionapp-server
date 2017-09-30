@@ -34,7 +34,7 @@ defmodule EstacionappServer.GarageController do
     garage_id = String.to_integer(garage_id)
 
     current_garage = Guardian.Plug.current_resource(conn)
-    
+
     if current_garage.id != garage_id, do: raise Error.NotFound
 
     current_garage
