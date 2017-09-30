@@ -37,7 +37,7 @@ defmodule EstacionappServer.GarageController do
     
     if current_garage.id != garage_id, do: raise Error.NotFound
 
-    garage = current_garage
+    current_garage
       |> Garage.changeset(params)
       |> Repo.update!
       
