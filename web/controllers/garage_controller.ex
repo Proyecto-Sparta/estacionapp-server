@@ -31,7 +31,7 @@ defmodule EstacionappServer.GarageController do
   Returns the inserted garage id or a hash with changeset errors.
   """
   def update(conn, %{"id" => garage_id} = params) do
-    {garage_id, _} = Integer.parse(garage_id)
+    garage_id = String.to_integer(garage_id)
 
     current_garage = Guardian.Plug.current_resource(conn)
     
@@ -41,9 +41,7 @@ defmodule EstacionappServer.GarageController do
       |> Garage.changeset(params)
       |> Repo.update!
       
-    conn
-      |> put_status(:ok)
-      |> json(%{id: garage.id})      
+    send_resp(conn, :ok, "")   
   end
 
   @doc """

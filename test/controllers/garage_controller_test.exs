@@ -32,7 +32,7 @@ defmodule EstacionappServer.GarageControllerTest do
     assert json_response(valid_create(), :created) == %{"id" => last_id()}
   end
 
-  test "update changes an existing model" do
+  test "update changes an existing model and returns :ok" do
     token = garage_jwt()
     %{:id => garage_id} = Repo.one(Garage)
     response = build_conn()
@@ -40,8 +40,8 @@ defmodule EstacionappServer.GarageControllerTest do
       |> patch(garage_path(@endpoint, :update, garage_id, email: "yo@internet.com"))
     
     garage = Repo.one(Garage)
-    assert json_response(response, :ok) == %{"id" => garage.id}
     assert garage.email == "yo@internet.com"
+    assert response(response, 200) =~ ""
   end
 
   test "update fails if the id is not correct" do
