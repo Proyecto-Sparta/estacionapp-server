@@ -5,7 +5,7 @@ defmodule EstacionappServer.Repo.Migrations.CreateGarage do
     create table(:garages) do
       add :username, :string
       add :password, :string
-      add :garage_name, :string
+      add :name, :string
       add :email, :string
 
       timestamps()

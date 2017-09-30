@@ -25,7 +25,7 @@ defmodule EstacionappServer.ErrorViewTest do
     changeset = Garage.changeset(%Garage{})
     assert render(EstacionappServer.ErrorView, "422.json", [reason: %{changeset: changeset}]) ==
            %{errors: %{detail: %{email: ["can't be blank"], 
-                                 garage_name: ["can't be blank"], 
+                                 name: ["can't be blank"], 
                                  location: ["can't be blank"], 
                                  password: ["can't be blank"], 
                                  username: ["can't be blank"]}}}

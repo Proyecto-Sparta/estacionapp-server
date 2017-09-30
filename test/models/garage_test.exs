@@ -6,7 +6,7 @@ defmodule EstacionappServer.GarageTest do
   import EstacionappServer.Factory
 
   @valid_attrs %{email: "medrano950@gmail.com",
-                 garage_name: "Medrano Parking",
+                 name: "Medrano Parking",
                  username: "medranoParking",
                  location: Utils.Gis.make_coordinates([0,0]),
                  password: "password"}

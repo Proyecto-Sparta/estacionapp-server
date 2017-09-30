@@ -17,7 +17,7 @@ defmodule EstacionappServer.GarageControllerTest do
     end
 
     assert Poison.decode!(resp) ==  %{"errors" => %{"detail" => %{"email" => ["can't be blank"], 
-                                      "garage_name" => ["can't be blank"], 
+                                      "name" => ["can't be blank"], 
                                       "location" => ["can't be blank"], 
                                       "password" => ["can't be blank"], 
                                       "username" => ["can't be blank"]}}}
@@ -64,12 +64,48 @@ defmodule EstacionappServer.GarageControllerTest do
     assert String.length(token) > 1
   end
 
+  test "search without jwt returns :unauthorized" do
+    assert_error_sent :unauthorized, fn ->
+      build_conn() |> get("/api/garage/search?latitude=0&longitude=0")
+    end             
+  end
+
+  test "search with jwt and missing parameters returns :bad_request" do
+    token = jwt()
+    assert_error_sent :bad_request, fn -> 
+      build_conn() 
+        |> put_req_header("authorization", token)
+        |> get("/api/garage/search")
+    end             
+  end
+
+  test "search with jwt returns :ok and garages" do
+    resp = valid_search()      
+    %{:id => garage_id, :pricing => %{:id => pricing_id}} = Repo.one(Garage)
+
+    garage = %{      
+      "id" => garage_id,
+      "name" => "Torcuato Parking",
+      "email" => "tparking@gmail.com",
+      "location" => [-58.622210, -34.480666],  
+      "distance" => 0,    
+      "pricing" => %{
+        "id" => pricing_id,
+        "car" => 0,
+        "bike" => 0,
+        "pickup" => 0
+      }
+    }
+
+    assert json_response(resp, :ok) == %{"garages" => [garage]}    
+  end
+
   defp valid_create do
     build_conn()
       |> post("/api/garage",
               username: "medranogarage950",
               email: "medranogarage950@gmail.com",
-              garage_name: "Medrano 950",
+              name: "Medrano 950",
               location: [0,0],
               password: "password")
   end
@@ -79,6 +115,14 @@ defmodule EstacionappServer.GarageControllerTest do
     build_conn()
       |> put_req_header("authorization", "Basic " <> Base.encode64("garageuser123:password"))
       |> get("api/garage/login")
+  end
+
+  defp valid_search do          
+    token = jwt()
+    query_string = Plug.Conn.Query.encode(%{latitude: -34.480666, longitude: -58.622210})
+    build_conn() 
+      |> put_req_header("authorization", token) 
+      |> get("/api/garage/search?" <> query_string)
   end
 
   defp last_id, do: Garage |> last |> Repo.one |> Map.get(:id)

@@ -3,7 +3,7 @@ defmodule EstacionappServer.DriverControllerTest do
 
   import EstacionappServer.Factory  
 
-  alias EstacionappServer.{Driver, Garage}
+  alias EstacionappServer.{Driver}
 
   test "create with incomplete params returns :unprocessable_entity" do
     assert_error_sent :unprocessable_entity, fn ->
@@ -63,32 +63,6 @@ defmodule EstacionappServer.DriverControllerTest do
     assert json_response(valid_login(), :accepted) == %{"status" => "logged in"}
   end
 
-  test "search without jwt returns :unauthorized" do
-    assert_error_sent :unauthorized, fn ->
-      build_conn() |> get("/api/driver/search?latitude=0&longitude=0")
-    end             
-  end
-
-  test "search with jwt and missing parameters returns :bad_request" do
-    token = jwt()
-    assert_error_sent :bad_request, fn -> 
-      build_conn() 
-        |> put_req_header("authorization", token)
-        |> get("/api/driver/search")
-    end             
-  end
-
-  test "search with jwt returns :ok and garages" do
-    resp = valid_search()        
-    garage = %{"id" => Garage |> last |> Repo.one |> Map.get(:id), 
-               "garage_name" => "Torcuato Parking",
-               "email" => "tparking@gmail.com",
-               "location" => %{"latitude" => -34.480666, "longitude" => -58.622210},
-               "distance" => 0}
-
-    assert json_response(resp, :ok) == %{"garages" => [garage]}    
-  end
-
   defp valid_create, do: build_conn() |> post("/api/driver", username: "asd123", full_name: "asd 123", email: "asd@asd.com", password: "password")
 
   defp valid_login do
@@ -103,13 +77,4 @@ defmodule EstacionappServer.DriverControllerTest do
   defp drivers_count, do: Repo.aggregate(Driver, :count, :id)
 
   defp jwt, do: Plug.Conn.get_resp_header(valid_login(), "authorization") |> List.first
-
-  defp valid_search do
-    insert(:garage)        
-    token = jwt()
-    query_string = Plug.Conn.Query.encode(%{latitude: -34.480666, longitude: -58.622210})
-    build_conn() 
-      |> put_req_header("authorization", token) 
-      |> get("/api/driver/search?" <> query_string)
-  end
 end

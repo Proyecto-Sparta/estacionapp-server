@@ -9,7 +9,7 @@ defmodule EstacionappServer.Garage do
   schema "garages" do
     field :username
     field :password
-    field :garage_name
+    field :name
     field :email
     field :location, Geo.Point
 
@@ -25,13 +25,13 @@ defmodule EstacionappServer.Garage do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-    fields = [:username, :email, :garage_name, :location, :password]
+    fields = [:username, :email, :name, :location, :password]
     struct
       |> cast(params, fields)
       |> validate_required(fields)
       |> unique_constraint(:username)
       |> validate_length(:username, min: 5)
-      |> validate_length(:garage_name, min: 5)
+      |> validate_length(:name, min: 5)
       |> validate_length(:password, min: 5)
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
@@ -64,9 +64,8 @@ defmodule EstacionappServer.Garage do
   end
 
   defp select_distance(queryable, location) do
-    from garage in queryable, 
-    select: map(garage, [:id, :email, :garage_name, :location]),
-    select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
+    from garage in queryable,
+      select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
   end
 end
 
