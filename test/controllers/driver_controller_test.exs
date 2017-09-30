@@ -1,21 +1,19 @@
 defmodule EstacionappServer.DriverControllerTest do
   use EstacionappServer.ConnCase
 
-  import EstacionappServer.Factory  
-
-  alias EstacionappServer.{Driver, Endpoint}
+  alias EstacionappServer.Driver
 
   test "create with incomplete params returns :unprocessable_entity" do
     assert_error_sent :unprocessable_entity, fn ->
       build_conn() 
-        |> post(driver_path(Endpoint, :create))
+        |> post(driver_path(@endpoint, :create))
     end
   end
 
   test "create with incomplete params returns the errors of the changeset" do
     {_, _, resp} = assert_error_sent :unprocessable_entity, fn ->
       build_conn() 
-        |> post(driver_path(Endpoint, :create))
+        |> post(driver_path(@endpoint, :create))
     end
 
     assert Poison.decode!(resp) ==  %{"errors" => %{"detail" => %{"email" => ["can't be blank"], 
@@ -36,7 +34,7 @@ defmodule EstacionappServer.DriverControllerTest do
   test "login without authorization returns :bad_request" do
     assert_error_sent :bad_request, fn ->
       build_conn() 
-        |> get(driver_path(Endpoint, :login))
+        |> get(driver_path(@endpoint, :login))
     end       
   end
 
@@ -44,7 +42,7 @@ defmodule EstacionappServer.DriverControllerTest do
     assert_error_sent :bad_request, fn ->
       build_conn() 
         |> put_req_header("authorization", "foobar")
-        |> get(driver_path(Endpoint, :login))
+        |> get(driver_path(@endpoint, :login))
     end       
   end
 
@@ -52,7 +50,7 @@ defmodule EstacionappServer.DriverControllerTest do
     assert_error_sent :unauthorized, fn ->
       build_conn() 
         |> put_req_header("authorization", "Basic am9zZTpqb3NlMTIz")
-        |> get(driver_path(Endpoint, :login))
+        |> get(driver_path(@endpoint, :login))
     end       
   end
 
@@ -66,13 +64,13 @@ defmodule EstacionappServer.DriverControllerTest do
     assert json_response(valid_login(), :accepted) == %{"status" => "logged in"}
   end
 
-  defp valid_create, do: build_conn() |> post(driver_path(Endpoint, :create), username: "asd123", full_name: "asd 123", email: "asd@asd.com", password: "password")
+  defp valid_create, do: build_conn() |> post(driver_path(@endpoint, :create), username: "asd123", full_name: "asd 123", email: "asd@asd.com", password: "password")
 
   defp valid_login do
     insert(:driver)
     build_conn() 
       |> put_req_header("authorization", "Basic " <> Base.encode64("joValim:password"))
-      |> get(driver_path(Endpoint, :login))
+      |> get(driver_path(@endpoint, :login))
   end
 
   defp last_id, do: Driver |> last |> Repo.one |> Map.get(:id)

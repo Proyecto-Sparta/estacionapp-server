@@ -1,21 +1,19 @@
 defmodule EstacionappServer.GarageControllerTest do
   use EstacionappServer.ConnCase
 
-  alias EstacionappServer.{Garage, Endpoint}
-
-  import EstacionappServer.Factory
+  alias EstacionappServer.Garage
 
   test "create with incomplete params returns :unprocessable_entity" do
     assert_error_sent :unprocessable_entity, fn ->
       build_conn() 
-        |> post(garage_path(Endpoint, :create))
+        |> post(garage_path(@endpoint, :create))
     end    
   end
 
   test "create with incomplete params returns the errors of the changeset" do
     {_, _, resp} = assert_error_sent :unprocessable_entity, fn ->
       build_conn() 
-        |> post(garage_path(Endpoint, :create))
+        |> post(garage_path(@endpoint, :create))
     end
 
     assert Poison.decode!(resp) ==  %{"errors" => %{"detail" => %{"email" => ["can't be blank"], 
@@ -35,11 +33,11 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   test "update changes an existing model" do
-    token = jwt()
+    token = garage_jwt()
     %{:id => garage_id} = Repo.one(Garage)
     response = build_conn()
       |> put_req_header("authorization", token) 
-      |> patch(garage_path(Endpoint, :update, garage_id, email: "yo@internet.com"))
+      |> patch(garage_path(@endpoint, :update, garage_id, email: "yo@internet.com"))
     
     garage = Repo.one(Garage)
     assert json_response(response, :ok) == %{"id" => garage.id}
@@ -47,19 +45,19 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   test "update fails if the id is not correct" do
-    token = jwt()
+    token = garage_jwt()
 
     assert_error_sent :not_found, fn ->
       build_conn()
         |> put_req_header("authorization", token) 
-        |> patch(garage_path(Endpoint, :update, 123456, email: "yo@internet.com"))
+        |> patch(garage_path(@endpoint, :update, 123456, email: "yo@internet.com"))
     end
   end
 
   test "login without authorization returns :bad_request" do
     assert_error_sent :bad_request, fn ->
       build_conn() 
-      |> get(garage_path(Endpoint, :login))
+      |> get(garage_path(@endpoint, :login))
     end
   end
 
@@ -67,7 +65,7 @@ defmodule EstacionappServer.GarageControllerTest do
     assert_error_sent :bad_request, fn ->
       build_conn()
         |> put_req_header("authorization", "foobar")
-        |> get(garage_path(Endpoint, :login))
+        |> get(garage_path(@endpoint, :login))
     end
   end
 
@@ -75,16 +73,16 @@ defmodule EstacionappServer.GarageControllerTest do
     assert_error_sent :unauthorized, fn ->
       build_conn() 
         |> put_req_header("authorization", "Basic am9zZTpqb3NlMTIz")
-        |> get(garage_path(Endpoint, :login))
+        |> get(garage_path(@endpoint, :login))
     end       
   end
 
   test "login with valid params returns :accepted" do
-    assert json_response(valid_login(), :accepted) == %{"status" => "logged in"}
+    assert json_response(valid_garage_login(), :accepted) == %{"status" => "logged in"}
   end
 
   test "login with valid params returns a jwt token in the header" do
-    "Bearer " <> token = jwt()
+    "Bearer " <> token = garage_jwt()
 
     assert String.length(token) > 1
   end
@@ -92,16 +90,16 @@ defmodule EstacionappServer.GarageControllerTest do
   test "search without jwt returns :unauthorized" do
     assert_error_sent :unauthorized, fn ->
       build_conn() 
-        |> get(garage_path(Endpoint, :search, latitude: 0, longuitude: 0))
+        |> get(garage_path(@endpoint, :search, latitude: 0, longuitude: 0))
     end             
   end
 
   test "search with jwt and missing parameters returns :bad_request" do
-    token = jwt()
+    token = garage_jwt()
     assert_error_sent :bad_request, fn -> 
       build_conn() 
         |> put_req_header("authorization", token)
-        |> get(garage_path(Endpoint, :search))
+        |> get(garage_path(@endpoint, :search))
     end             
   end
 
@@ -128,7 +126,7 @@ defmodule EstacionappServer.GarageControllerTest do
 
   defp valid_create do
     build_conn()
-      |> post(garage_path(Endpoint, :create),
+      |> post(garage_path(@endpoint, :create),
               username: "medranogarage950",
               email: "medranogarage950@gmail.com",
               name: "Medrano 950",
@@ -136,24 +134,15 @@ defmodule EstacionappServer.GarageControllerTest do
               password: "password")
   end
 
-  defp valid_login do
-    insert(:garage)
-    build_conn()
-      |> put_req_header("authorization", "Basic " <> Base.encode64("garageuser123:password"))
-      |> get(garage_path(Endpoint, :login))
-  end
-
   defp valid_search do          
-    token = jwt()
+    token = garage_jwt()
     query_string = Plug.Conn.Query.encode(%{latitude: -34.480666, longitude: -58.622210})
     build_conn() 
       |> put_req_header("authorization", token) 
-      |> get(garage_path(Endpoint, :search) <> "?" <> query_string)
+      |> get(garage_path(@endpoint, :search) <> "?" <> query_string)
   end
 
   defp last_id, do: Garage |> last |> Repo.one |> Map.get(:id)
 
   defp garages_count, do: Repo.aggregate(Garage, :count, :id)
-
-  defp jwt, do: get_resp_header(valid_login(), "authorization") |> List.first
 end

@@ -1,13 +1,13 @@
 defmodule EstacionappServer.GarageView do
   use EstacionappServer.Web, :view
 
-  def render("garages_search.json", %{garages: garages}) do
+  def render("search.json", %{garages: garages}) do
     %{
-      garages: render_many(garages, __MODULE__, "garage.json")
+      garages: render_many(garages, __MODULE__, "show.json")
     }
   end
 
-  def render("garage.json", %{garage: garage}) do
+  def render("show.json", %{garage: garage}) do
     %{
       id: garage.id,
       email: garage.email,

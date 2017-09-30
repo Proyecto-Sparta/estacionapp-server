@@ -10,17 +10,19 @@ defmodule EstacionappServer.Router do
   scope "/api", EstacionappServer do
     pipe_through :api
 
-    scope "/driver" do
-      post "/", DriverController, :create
+    scope "/drivers" do
       get "/login", DriverController, :login
+      post "/", DriverController, :create
     end
     
-    scope "/garage" do
+    scope "/garages" do
       get "/login", GarageController, :login
+      get "/search", GarageController, :search
       post "/", GarageController, :create
       patch "/:id", GarageController, :update
-      get "/search", GarageController, :search
       options "/login", GarageController, :options
     end
+
+    resources "/layouts", GarageLayoutController, only: [:index, :create, :update]
   end
 end

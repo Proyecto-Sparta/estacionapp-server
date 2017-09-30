@@ -58,7 +58,7 @@ defmodule EstacionappServer.GarageController do
     garages = params
       |> Garage.close_to   
 
-    render(conn, "garages_search.json", garages: garages)
+    render(conn, "search.json", garages: garages)
   end
 
   @doc """

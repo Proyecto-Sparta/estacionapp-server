@@ -16,12 +16,12 @@ defmodule EstacionappServer.GarageLayout do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-    fields = [:floor_level]
+    fields = [:floor_level, :garage_id]
     struct
       |> cast(params, fields)
       |> validate_required(fields)
       |> cast_embed(:parking_spaces)
-      |> assoc_constraint(:garage, required: true)
+      |> assoc_constraint(:garage)
   end
 
   defmodule ParkingSpace do
@@ -30,11 +30,11 @@ defmodule EstacionappServer.GarageLayout do
     embedded_schema do
       field :lat, :float
       field :long, :float
-      field :is_occupied, :boolean, default: false
+      field :occupied?, :boolean, default: false
     end
   
     def changeset(struct, params \\ %{}) do
-      fields = [:lat, :long, :is_occupied]
+      fields = [:lat, :long, :occupied?]
       struct
         |> cast(params, fields)
     end

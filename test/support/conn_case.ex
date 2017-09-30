@@ -24,11 +24,21 @@ defmodule EstacionappServer.ConnCase do
       import Ecto.Changeset
       import Ecto.Query
       import EstacionappServer.Router.Helpers
+      import EstacionappServer.Factory     
 
       alias EstacionappServer.Repo
 
       # The default endpoint for testing
       @endpoint EstacionappServer.Endpoint
+
+      defp valid_garage_login do
+        insert(:garage)
+        build_conn()
+          |> put_req_header("authorization", "Basic " <> Base.encode64("garageuser123:password"))
+          |> get(garage_path(@endpoint, :login))
+      end
+
+      defp garage_jwt, do: get_resp_header(valid_garage_login(), "authorization") |> List.first
     end
   end
 
