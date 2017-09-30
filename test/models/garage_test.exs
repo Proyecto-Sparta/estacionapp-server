@@ -20,14 +20,21 @@ defmodule EstacionappServer.GarageTest do
 
   test "creates a garage with a given layout" do
     layouts_params = %{floor_level: 1, parking_spaces: %Geo.GeometryCollection{geometries: [%Geo.Point{coordinates: {0, 0}}]}}
-    garage = Repo.preload(insert(:garage), :layouts)
-    
-    garage
+    insert(:garage)
+      |> Repo.preload(:layouts)
       |> Garage.changeset(%{layouts: [layouts_params]})
       |> Repo.update!
 
     layouts_count = Repo.all(GarageLayout) |> Enum.count
     assert layouts_count == 1
+  end
+
+  test "has pricing" do
+    %{:pricing => pricing} = insert(:garage)
+
+    assert pricing.bike == 0
+    assert pricing.car == 0
+    assert pricing.pickup == 0
   end
 
   test "changeset with invalid attributes" do

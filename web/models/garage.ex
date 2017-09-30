@@ -4,16 +4,17 @@ defmodule EstacionappServer.Garage do
   import Geo.PostGIS
   import EstacionappServer.Utils.Gis
 
-  alias EstacionappServer.{Repo, GarageLayout}
+  alias EstacionappServer.{Repo, GarageLayout, Garage}
   
   schema "garages" do
-    field :username, :string
-    field :password, :string
-    field :garage_name, :string
-    field :email, :string
+    field :username
+    field :password
+    field :garage_name
+    field :email
     field :location, Geo.Point
 
     has_many :layouts, GarageLayout, on_replace: :delete
+    embeds_one :pricing, Garage.Pricing
 
     field :distance, :integer, virtual: true
 
@@ -27,7 +28,6 @@ defmodule EstacionappServer.Garage do
     fields = [:username, :email, :garage_name, :location, :password]
     struct
       |> cast(params, fields)
-      |> cast_assoc(:layouts)
       |> validate_required(fields)
       |> unique_constraint(:username)
       |> validate_length(:username, min: 5)
@@ -35,6 +35,8 @@ defmodule EstacionappServer.Garage do
       |> validate_length(:password, min: 5)
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
+      |> cast_assoc(:layouts)
+      |> cast_embed(:pricing)
   end
 
   @doc """
@@ -65,5 +67,24 @@ defmodule EstacionappServer.Garage do
     from garage in queryable, 
     select: map(garage, [:id, :email, :garage_name, :location]),
     select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
+  end
+end
+
+defmodule EstacionappServer.Garage.Pricing do
+  use EstacionappServer.Web, :model
+  
+  embedded_schema do
+    field :car, :integer, default: 0
+    field :bike, :integer, default: 0
+    field :pickup, :integer, default: 0
+  end
+
+  def changeset(struct, params \\ %{}) do
+    fields = [:car, :bike, :pickup]
+    struct
+      |> cast(params, fields)
+      |> validate_number(:car, greater_than_or_equal_to: 0)
+      |> validate_number(:bike, greater_than_or_equal_to: 0)
+      |> validate_number(:pickup, greater_than_or_equal_to: 0)
   end
 end

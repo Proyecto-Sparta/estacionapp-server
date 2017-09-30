@@ -8,7 +8,11 @@ defmodule EstacionappServer.Factory do
         garage_name: "Torcuato Parking",
         email: "tparking@gmail.com",
         location: Utils.Gis.make_coordinates([-34.480666, -58.622210]),
-        password: "password"}
+        password: "password",
+        pricing: %{
+          car: 0,
+          bike: 0,
+          pickup: 0}}
     end
 
     def driver_factory do
