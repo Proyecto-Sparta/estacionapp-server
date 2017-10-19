@@ -36,5 +36,7 @@ defmodule EstacionappServer.Endpoint do
     key: "_estacionapp_server_key",
     signing_salt: "7tpwzWff"
 
+  plug CORSPlug
+    
   plug EstacionappServer.Router
 end
