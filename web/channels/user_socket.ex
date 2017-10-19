@@ -3,7 +3,6 @@ defmodule EstacionappServer.UserSocket do
 
   ## Channels
   # channel "room:*", EstacionappServer.RoomChannel
-  channel "garage:*", EstacionappServer.NotificationChannel
   
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
