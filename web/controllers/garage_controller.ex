@@ -1,7 +1,7 @@
 defmodule EstacionappServer.GarageController do
   use EstacionappServer.Web, :controller
      
-  alias EstacionappServer.{Garage, Repo, Utils}
+  alias EstacionappServer.{Garage, Utils}
 
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search, :update]
   plug Guardian.Plug.LoadResource when action in [:update]

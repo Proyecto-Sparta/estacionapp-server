@@ -48,6 +48,7 @@ defmodule EstacionappServer.Web do
       import EstacionappServer.Gettext
 
       alias EstacionappServer.{Repo, Error, Utils}
+      alias __MODULE__      
 
       plug :login_params when var!(action) in [:login]
 
@@ -79,6 +80,21 @@ defmodule EstacionappServer.Web do
       import EstacionappServer.Router.Helpers
       import EstacionappServer.ErrorHelpers
       import EstacionappServer.Gettext
+    end
+  end
+
+  def params do
+    quote do
+      use Ecto.Schema
+      
+      alias EstacionappServer.Error
+      alias __MODULE__
+    
+      import Ecto.Changeset
+    
+      @primary_key false      
+
+      def validate(struct), do: struct |> permit |> Map.delete(:__struct__)
     end
   end
 
