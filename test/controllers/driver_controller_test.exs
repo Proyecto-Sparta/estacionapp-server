@@ -54,14 +54,17 @@ defmodule EstacionappServer.DriverControllerTest do
     end       
   end
 
-  test "login with valid authorization returns a jwt token in the header" do
-    "Bearer " <> token = jwt()
+  test "login with valid authorization returns a jwt token in the header and driver data" do
+    response = valid_login()
+    "Bearer " <> token = Plug.Conn.get_resp_header(response, "authorization") |> List.first
+    driver = Repo.one(Driver)
 
     assert String.length(token) > 1
+    assert json_response(response, :accepted) == %{"id" => driver.id, "name" => driver.full_name, "email" => driver.email }
   end
 
   test "login with valid authorization returns :accepted" do
-    assert json_response(valid_login(), :accepted) == %{"status" => "logged in"}
+    assert json_response(valid_login(), :accepted) 
   end
 
   defp valid_create, do: build_conn() |> post(driver_path(@endpoint, :create), username: "asd123", full_name: "asd 123", email: "asd@asd.com", password: "password")
@@ -76,6 +79,4 @@ defmodule EstacionappServer.DriverControllerTest do
   defp last_id, do: Driver |> last |> Repo.one |> Map.get(:id)
 
   defp drivers_count, do: Repo.aggregate(Driver, :count, :id)
-
-  defp jwt, do: Plug.Conn.get_resp_header(valid_login(), "authorization") |> List.first
 end

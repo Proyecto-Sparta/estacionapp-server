@@ -49,6 +49,6 @@ defmodule EstacionappServer.DriverController do
     new_conn
       |> put_resp_header("authorization", "Bearer #{jwt}")
       |> put_status(:accepted)
-      |> json(%{status: "logged in"})
+      |> render("driver.json", driver: driver)
   end
 end
