@@ -5,7 +5,12 @@ defmodule EstacionappServer.DriverView do
     %{
       id: driver.id,
       email: driver.email,
-      name: driver.full_name
+      name: driver.full_name,
+      vehicle: render_one(driver.vehicle, __MODULE__, "vehicle.json", as: :vehicle)
     }
+  end
+
+  def render("vehicle.json", %{vehicle: vehicle}) do
+    %{type: vehicle.type, plate: vehicle.plate}
   end
 end

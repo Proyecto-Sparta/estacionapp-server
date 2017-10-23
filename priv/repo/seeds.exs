@@ -26,7 +26,9 @@ create_driver = fn name ->
   %Driver{username: name,
           password: "password",
           full_name: name,
-          email: name <> "@gmail.com"}
+          email: name <> "@gmail.com",
+          vehicle: %{type: "pickup", plate: "BIG TRUCK"}
+  }
 end
 
 [create_garage.("Apart Car Palermo", [-34.578403, -58.412675]),

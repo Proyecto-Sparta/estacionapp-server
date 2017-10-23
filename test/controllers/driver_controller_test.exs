@@ -60,14 +60,23 @@ defmodule EstacionappServer.DriverControllerTest do
     driver = Repo.one(Driver)
 
     assert String.length(token) > 1
-    assert json_response(response, :accepted) == %{"id" => driver.id, "name" => driver.full_name, "email" => driver.email }
+    assert json_response(response, :accepted) == %{"id" => driver.id, "name" => driver.full_name, "email" => driver.email,
+                                                   "vehicle" => %{"type" => "car", "plate" => "ELX-RLZ"}}
   end
 
   test "login with valid authorization returns :accepted" do
     assert json_response(valid_login(), :accepted) 
   end
 
-  defp valid_create, do: build_conn() |> post(driver_path(@endpoint, :create), username: "asd123", full_name: "asd 123", email: "asd@asd.com", password: "password")
+  defp valid_create do 
+    build_conn() 
+      |> post(driver_path(@endpoint, :create), 
+        username: "asd123", 
+        full_name: "asd 123", 
+        email: "asd@asd.com", 
+        password: "password",
+        vehicle: %{type: "car", plate: "ASD BCD"})
+  end
 
   defp valid_login do
     insert(:driver)

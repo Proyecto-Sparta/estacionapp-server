@@ -24,7 +24,8 @@ defmodule EstacionappServer.Factory do
         username: "joValim",
         full_name: "Jose Valim",
         email: "jvalim@plataformatec.br",
-        password: "password"
+        password: "password",
+        vehicle: %{type: "car", plate: "ELX-RLZ"}
       }
     end
 

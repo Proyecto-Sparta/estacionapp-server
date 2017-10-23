@@ -6,6 +6,8 @@ defmodule EstacionappServer.Driver do
     field :password
     field :full_name
     field :email
+    
+    embeds_one :vehicle, Driver.Vehicle
 
     timestamps()
   end
@@ -22,6 +24,7 @@ defmodule EstacionappServer.Driver do
       |> validate_length(:username, min: 5)
       |> validate_length(:full_name, min: 5)
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
+      |> cast_embed(:vehicle)
       |> put_digested_password
   end
 
@@ -29,5 +32,22 @@ defmodule EstacionappServer.Driver do
     Driver
       |> where(username: ^username, password: ^pass)
       |> Repo.one
+  end
+
+  defmodule Vehicle do
+    use EstacionappServer.Web, :model
+    
+    embedded_schema do
+      field :type
+      field :plate
+    end
+  
+    def changeset(struct, params \\ %{}) do
+      fields = [:type, :plate]
+      struct
+        |> cast(params, fields)
+        |> validate_required(fields)
+        |> validate_inclusion(:type, ["bike", "pickup", "car"])
+    end
   end
 end
