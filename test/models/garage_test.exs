@@ -21,9 +21,9 @@ defmodule EstacionappServer.GarageTest do
   test "has pricing" do
     %{:pricing => pricing} = insert(:garage)
 
-    assert pricing.bike == 0
-    assert pricing.car == 0
-    assert pricing.pickup == 0
+    assert pricing.bike == 23
+    assert pricing.car == 15
+    assert pricing.pickup == 88
   end
 
   test "has no default layouts" do

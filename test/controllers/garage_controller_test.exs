@@ -115,9 +115,9 @@ defmodule EstacionappServer.GarageControllerTest do
       "distance" => 0,    
       "pricing" => %{
         "id" => pricing_id,
-        "car" => 0,
-        "bike" => 0,
-        "pickup" => 0
+        "car" => 15,
+        "bike" => 23,
+        "pickup" => 88
       }
     }
 

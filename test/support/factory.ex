@@ -11,11 +11,10 @@ defmodule EstacionappServer.Factory do
         location: Utils.Gis.make_coordinates([-34.480666, -58.622210]),
         password: "password",
         pricing: %{
-          car: 0,
-          bike: 0,
-          pickup: 0
-        },
-        layouts: []
+          car: 15,
+          bike: 23,
+          pickup: 88
+        }
       }
     end
 
@@ -25,7 +24,9 @@ defmodule EstacionappServer.Factory do
         full_name: "Jose Valim",
         email: "jvalim@plataformatec.br",
         password: "password",
-        vehicle: %{type: "car", plate: "ELX-RLZ"}
+        vehicle: %{
+          type: "car", 
+          plate: "ELX-RLZ"}
       }
     end
 
