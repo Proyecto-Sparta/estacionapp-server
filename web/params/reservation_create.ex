@@ -9,10 +9,8 @@ defmodule EstacionappServer.Params.ReservationCreate do
 
   def permit(params) do
     fields = [:parking_space_id, :garage_layout_id, :driver_id]
-    changeset = %ReservationCreate{}
+    %ReservationCreate{}
       |> cast(params, fields)
       |> validate_required(fields)
-    unless changeset.valid?, do: raise Error.BadRequest, message: "Bad request params."
-    apply_changes(changeset)
   end
 end

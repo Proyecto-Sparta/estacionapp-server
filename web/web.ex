@@ -94,7 +94,11 @@ defmodule EstacionappServer.Web do
     
       @primary_key false      
 
-      def validate(struct), do: struct |> permit |> Map.delete(:__struct__)
+      def validate(struct) do         
+        changeset = permit(struct) 
+        unless changeset.valid?, do: raise Error.BadRequest, message: "Bad request params."
+        apply_changes(changeset) |> Map.delete(:__struct__)
+      end
     end
   end
 
