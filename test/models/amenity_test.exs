@@ -19,5 +19,15 @@ defmodule EstacionappServer.AmenityTest do
       changeset = Amenity.changeset(%Amenity{}, %{description: "Lorm"})
       refute changeset.valid?
     end
+
+    test "description duplicated" do
+      assert_raise Ecto.InvalidChangesetError, ~r/taken/, fn ->
+        for _ <- 1..2 do 
+          %Amenity{}
+            |> Amenity.changeset(%{description: "asdasd"}) 
+            |> Repo.insert!
+        end
+      end
+    end
   end
 end

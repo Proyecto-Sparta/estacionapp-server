@@ -8,7 +8,9 @@ defmodule EstacionappServer.Repo.Migrations.AddGarageAmenities do
       timestamps()
     end
 
-    create table(:garages_amenities) do
+    create unique_index(:amenities, [:description])
+
+    create table(:garages_amenities, primary_key: false) do
       add :garage_id, references(:garages)
       add :amenity_id, references(:amenities)
     end

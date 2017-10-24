@@ -3,6 +3,8 @@ defmodule EstacionappServer.Amenity do
 
   schema "amenities" do
     field :description
+
+    timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
@@ -10,6 +12,7 @@ defmodule EstacionappServer.Amenity do
     struct
       |> cast(params, fields)
       |> validate_required(fields)      
+      |> unique_constraint(:description)
       |> validate_length(:description, min: 5)
   end
 end
