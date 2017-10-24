@@ -24,7 +24,7 @@ defmodule EstacionappServer.Driver do
       |> validate_length(:username, min: 5)
       |> validate_length(:full_name, min: 5)
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
-      |> cast_embed(:vehicle)
+      |> cast_embed(:vehicle, required: true)
       |> put_digested_password
   end
 

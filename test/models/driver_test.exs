@@ -3,7 +3,7 @@ defmodule EstacionappServer.DriverTest do
 
   alias EstacionappServer.Driver
 
-  @valid_attrs %{email: "someemail@gmail.com", full_name: "some content", username: "some content", password: "password"}
+  @valid_attrs %{email: "someemail@gmail.com", full_name: "some content", username: "some content", password: "password", vehicle: %{type: "bike", plate: "PLATE 123"}}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

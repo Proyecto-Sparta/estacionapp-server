@@ -9,7 +9,9 @@ defmodule EstacionappServer.GarageTest do
                  name: "Medrano Parking",
                  username: "medranoParking",
                  location: Utils.Gis.make_coordinates([0,0]),
-                 password: "password"}
+                 password: "password",
+                 pricing: %{bike: 0, car: 0, pickup: 0}
+                }
 
   @invalid_attrs %{}
 

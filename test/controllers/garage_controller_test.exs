@@ -20,7 +20,8 @@ defmodule EstacionappServer.GarageControllerTest do
                                       "name" => ["can't be blank"], 
                                       "location" => ["can't be blank"], 
                                       "password" => ["can't be blank"], 
-                                      "username" => ["can't be blank"]}}}
+                                      "username" => ["can't be blank"],
+                                      "pricing" => ["can't be blank"]}}}
   end
 
   test "create with valid params creates a garage" do
@@ -131,7 +132,8 @@ defmodule EstacionappServer.GarageControllerTest do
               email: "medranogarage950@gmail.com",
               name: "Medrano 950",
               location: [0,0],
-              password: "password")
+              password: "password",
+              pricing: %{bike: 0, pickup: 0, car: 0})
   end
 
   defp valid_search do          

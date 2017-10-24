@@ -36,7 +36,7 @@ defmodule EstacionappServer.Garage do
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
       |> put_location
-      |> cast_embed(:pricing)
+      |> cast_embed(:pricing, required: true)
   end
 
   defp put_location(changeset) do

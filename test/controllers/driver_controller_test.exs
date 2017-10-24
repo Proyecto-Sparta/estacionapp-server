@@ -19,7 +19,8 @@ defmodule EstacionappServer.DriverControllerTest do
     assert Poison.decode!(resp) ==  %{"errors" => %{"detail" => %{"email" => ["can't be blank"], 
                                       "full_name" => ["can't be blank"],                                       
                                       "password" => ["can't be blank"], 
-                                      "username" => ["can't be blank"]}}}
+                                      "username" => ["can't be blank"],
+                                      "vehicle" => ["can't be blank"]}}}
   end
 
   test "create with valid params creates a driver" do
@@ -60,8 +61,14 @@ defmodule EstacionappServer.DriverControllerTest do
     driver = Repo.one(Driver)
 
     assert String.length(token) > 1
-    assert json_response(response, :accepted) == %{"id" => driver.id, "name" => driver.full_name, "email" => driver.email,
-                                                   "vehicle" => %{"type" => "car", "plate" => "ELX-RLZ"}}
+    assert json_response(response, :accepted) == %{ "id" => driver.id, 
+                                                    "name" => driver.full_name, 
+                                                    "email" => driver.email,
+                                                    "vehicle" => %{
+                                                      "type" => "car", 
+                                                      "plate" => "ELX-RLZ"                                           
+                                                    }
+                                                  }
   end
 
   test "login with valid authorization returns :accepted" do
@@ -71,11 +78,11 @@ defmodule EstacionappServer.DriverControllerTest do
   defp valid_create do 
     build_conn() 
       |> post(driver_path(@endpoint, :create), 
-        username: "asd123", 
-        full_name: "asd 123", 
-        email: "asd@asd.com", 
-        password: "password",
-        vehicle: %{type: "car", plate: "ASD BCD"})
+          username: "asd123", 
+          full_name: "asd 123", 
+          email: "asd@asd.com", 
+          password: "password",
+          vehicle: %{plate: "ASD BCD", type: "car"})
   end
 
   defp valid_login do

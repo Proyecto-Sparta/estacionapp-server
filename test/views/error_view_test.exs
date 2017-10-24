@@ -28,7 +28,8 @@ defmodule EstacionappServer.ErrorViewTest do
                                  name: ["can't be blank"], 
                                  location: ["can't be blank"], 
                                  password: ["can't be blank"], 
-                                 username: ["can't be blank"]}}}
+                                 username: ["can't be blank"],
+                                 pricing: ["can't be blank"]}}}
   end
 
   test "renders 422.json of a driver" do
@@ -37,7 +38,8 @@ defmodule EstacionappServer.ErrorViewTest do
            %{errors: %{detail: %{email: ["can't be blank"], 
                                  full_name: ["can't be blank"],                                   
                                  password: ["can't be blank"], 
-                                 username: ["can't be blank"]}}}
+                                 username: ["can't be blank"],
+                                 vehicle: ["can't be blank"]}}}
   end
 
   test "render 500.json" do
