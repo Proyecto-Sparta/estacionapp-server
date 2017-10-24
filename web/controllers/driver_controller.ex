@@ -36,12 +36,11 @@ defmodule EstacionappServer.DriverController do
   def login(conn, params) do
     params
       |> Driver.authenticate
-      |> case do
-        nil -> raise Error.Unauthorized, message: "Invalid credentials."
-        driver -> authenticate(driver, conn)
-      end
+      |> authenticate(conn)
   end
 
+  defp authenticate(nil, _), do: raise Error.Unauthorized, message: "Invalid credentials."
+  
   defp authenticate(driver, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
     new_conn = Guardian.Plug.api_sign_in(conn, driver)
