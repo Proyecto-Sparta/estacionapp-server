@@ -18,7 +18,7 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
 
     layouts = [
       %{"id" => id, "floor_level" => 1, "parking_spaces" => [
-          %{"id" => space.id, "lat" => 0.0, "long" => 0.0, "occupied?" => false}
+          %{"id" => space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied?" =>  true}
         ]
       }
     ]
@@ -84,8 +84,8 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
     assert Poison.decode!(response) ==  %{"errors" => 
                                           %{"detail" => %{
                                               "floor_level" => ["can't be blank"], 
-                                              "garage_id" => ["can't be blank"]
-                                            }
+                                              "garage_id" => ["can't be blank"],
+                                              "parking_spaces" => ["can't be blank"]}
                                           }
                                         }
   end    
