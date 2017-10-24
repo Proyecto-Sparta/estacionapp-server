@@ -1,7 +1,7 @@
 defmodule EstacionappServer.Factory do
   use ExMachina.Ecto, repo: EstacionappServer.Repo
 
-  alias EstacionappServer.{Garage, Driver, Utils, GarageLayout}
+  alias EstacionappServer.{Garage, Driver, Utils, GarageLayout, Amenity}
 
     def garage_factory do
       %Garage{
@@ -37,5 +37,9 @@ defmodule EstacionappServer.Factory do
           %{x: 0, y: 0, height: 10, width: 15, occupied?: true}
         ]
       }
+    end
+
+    def amenity_factory do
+      %Amenity{description: "Lavamos autos"}
     end
 end

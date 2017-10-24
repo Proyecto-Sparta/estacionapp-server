@@ -4,7 +4,7 @@ defmodule EstacionappServer.Garage do
   import Geo.PostGIS
   import EstacionappServer.Utils.Gis
 
-  alias EstacionappServer.{Repo, GarageLayout, Garage, Utils}
+  alias EstacionappServer.{Repo, GarageLayout, Garage, Utils, Amenity}
   
   schema "garages" do
     field :username
@@ -15,6 +15,7 @@ defmodule EstacionappServer.Garage do
 
     has_many :layouts, GarageLayout, on_replace: :delete
     embeds_one :pricing, Garage.Pricing
+    many_to_many :amenities, Amenity, join_through: "garages_amenities", on_replace: :delete
 
     field :distance, :integer, virtual: true
 
@@ -35,15 +36,8 @@ defmodule EstacionappServer.Garage do
       |> validate_length(:password, min: 5)
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
-      |> put_location
       |> cast_embed(:pricing, required: true)
-  end
-
-  defp put_location(changeset) do
-    location = changeset
-      |> get_change(:location)
-      |> Utils.Gis.make_coordinates
-    put_change(changeset, :location, location)
+      |> put_amenities(params)
   end
 
   @doc """
@@ -74,6 +68,15 @@ defmodule EstacionappServer.Garage do
     from garage in queryable,
       select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
   end
+
+  defp put_amenities(changeset, %{amenities: amenities}) when is_list(amenities) do
+    build_amenities = fn amenity_id -> Repo.get!(Amenity, amenity_id) end
+    amenities
+      |> Enum.map(build_amenities)
+      |> (& put_assoc(changeset, :amenities, &1)).()
+  end
+
+  defp put_amenities(changeset, _), do: changeset
 
   defmodule Pricing do
     use EstacionappServer.Web, :model

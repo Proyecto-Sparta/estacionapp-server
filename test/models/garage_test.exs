@@ -15,52 +15,63 @@ defmodule EstacionappServer.GarageTest do
 
   @invalid_attrs %{}
 
-  test "changeset with valid attributes" do
-    changeset = Garage.changeset(%Garage{}, @valid_attrs)
-    assert changeset.valid?
+  describe "changeset" do
+    
+    test "with valid attributes" do
+      changeset = Garage.changeset(%Garage{}, @valid_attrs)
+      assert changeset.valid?
+    end
+    
+    test "with invalid attributes" do
+      changeset = Garage.changeset(%Garage{}, @invalid_attrs)
+      refute changeset.valid?
+    end
   end
 
-  test "has pricing" do
-    %{:pricing => pricing} = insert(:garage)
+  describe "amenities" do
+    
+    test "amenities are changed" do
+      garage = insert(:garage) |> Repo.preload(:amenities)
+      
+      assert garage.amenities == []
 
-    assert pricing.bike == 23
-    assert pricing.car == 15
-    assert pricing.pickup == 88
+      a1 = insert(:amenity)
+      a2 = insert(:amenity, description: "Foobar")
+
+      garage = garage
+        |> Garage.changeset(%{amenities: [a1.id, a2.id]})
+        |> Repo.update!
+        |> Repo.preload(:amenities)
+
+      assert garage.amenities == [a1, a2]
+    end
   end
 
-  test "has no default layouts" do
-    garage = insert(:garage) |> Repo.preload(:layouts)
-
-    assert garage.layouts == []    
-  end
-
-  test "changeset with invalid attributes" do
-    changeset = Garage.changeset(%Garage{}, @invalid_attrs)
-    refute changeset.valid?
-  end
-
-  test "close_to returns all garages without max_distance" do
-    insert(:garage)
-    insert(:garage, username: "Devoto Parking")
-    garages = garages_close_to_devoto()
-
-    assert Enum.count(garages) == 2
-  end
-
-  test "close_to with max_distance filters garages" do
-    insert(:garage)
-    insert(:garage, username: "Devoto Parking",
-           location: Utils.Gis.make_coordinates([-34.597524, -58.515372]))
-    garages = garages_close_to_devoto(%{"max_distance" => 400})
-
-    assert Enum.count(garages) == 1
-  end
-
-  test "close_to inserts distance" do
-    insert(:garage)
-    [garage] = garages_close_to_devoto()
-
-    assert garage.distance == 16591
+  describe "close_to" do
+    
+    test "close_to returns all garages without max_distance" do
+      insert(:garage)
+      insert(:garage, username: "Devoto Parking")
+      garages = garages_close_to_devoto()
+  
+      assert Enum.count(garages) == 2
+    end
+  
+    test "close_to with max_distance filters garages" do
+      insert(:garage)
+      insert(:garage, username: "Devoto Parking",
+             location: Utils.Gis.make_coordinates([-34.597524, -58.515372]))
+      garages = garages_close_to_devoto(%{"max_distance" => 400})
+  
+      assert Enum.count(garages) == 1
+    end
+  
+    test "close_to inserts distance" do
+      insert(:garage)
+      [garage] = garages_close_to_devoto()
+  
+      assert garage.distance == 16591
+    end
   end
 
   defp garages_close_to_devoto(params \\ %{}) do
