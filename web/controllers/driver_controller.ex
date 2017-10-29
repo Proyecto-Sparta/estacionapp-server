@@ -2,10 +2,27 @@ defmodule EstacionappServer.DriverController do
   use EstacionappServer.Web, :controller
   
   alias EstacionappServer.{Driver, Repo}
+
+  plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:update]
+  plug Guardian.Plug.LoadResource when action in [:update]
   
   @moduledoc """
   This is the controller for all API calls related with the drivers client.
   """
+
+  def update(conn, %{"id" => driver_id} = params) do
+    driver_id = String.to_integer(driver_id)
+
+    current_driver = Guardian.Plug.current_resource(conn)
+
+    if current_driver.id != driver_id, do: raise Error.NotFound
+
+    current_driver
+      |> Driver.changeset(params)
+      |> Repo.update!
+      
+    send_resp(conn, :ok, "")   
+  end
 
   @doc """
   Inserts a new Driver.

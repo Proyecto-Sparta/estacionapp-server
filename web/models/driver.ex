@@ -7,7 +7,7 @@ defmodule EstacionappServer.Driver do
     field :full_name
     field :email
     
-    embeds_one :vehicle, Driver.Vehicle
+    embeds_one :vehicle, Driver.Vehicle, on_replace: :update
 
     timestamps()
   end

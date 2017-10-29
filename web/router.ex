@@ -12,6 +12,7 @@ defmodule EstacionappServer.Router do
     scope "/drivers" do
       get "/login", DriverController, :login
       post "/", DriverController, :create
+      patch "/:id", DriverController, :update
     end
     
     scope "/garages" do

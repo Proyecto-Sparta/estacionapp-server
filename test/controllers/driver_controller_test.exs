@@ -87,6 +87,32 @@ defmodule EstacionappServer.DriverControllerTest do
     end
   end
 
+  describe "update" do
+    
+    test "changes an existing model and returns :ok" do
+      token = get_resp_header(valid_login(), "authorization") |> List.first
+      %{:id => driver_id} = Repo.one(Driver)
+      response = build_conn()
+        |> put_req_header("authorization", token) 
+        |> patch(driver_path(@endpoint, :update, driver_id, vehicle: %{plate: "XXX YYY", type: "pickup"}))
+      
+      vehicle = Repo.one(Driver).vehicle
+      assert vehicle.plate == "XXX YYY"
+      assert vehicle.type == "pickup"
+      assert response(response, 200) =~ ""
+    end
+  
+    test "update fails if the id is not correct" do
+      token = get_resp_header(valid_login(), "authorization") |> List.first
+  
+      assert_error_sent :not_found, fn ->
+        build_conn()
+          |> put_req_header("authorization", token) 
+          |> patch(driver_path(@endpoint, :update, 123456))
+      end
+    end
+  end
+
   defp valid_create do 
     build_conn() 
       |> post(driver_path(@endpoint, :create), 
