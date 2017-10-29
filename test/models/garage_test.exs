@@ -30,7 +30,7 @@ defmodule EstacionappServer.GarageTest do
 
   describe "amenities" do
     
-    test "amenities are changed" do
+    test "are changed" do
       garage = insert(:garage) |> Repo.preload(:amenities)
       
       assert garage.amenities == []

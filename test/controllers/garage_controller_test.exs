@@ -38,10 +38,11 @@ defmodule EstacionappServer.GarageControllerTest do
     %{:id => garage_id} = Repo.one(Garage)
     response = build_conn()
       |> put_req_header("authorization", token) 
-      |> patch(garage_path(@endpoint, :update, garage_id, email: "yo@internet.com"))
+      |> patch(garage_path(@endpoint, :update, garage_id, email: "yo@internet.com", id: 123))
     
     garage = Repo.one(Garage)
     assert garage.email == "yo@internet.com"
+    assert garage.id == garage_id
     assert response(response, 200) =~ ""
   end
 
