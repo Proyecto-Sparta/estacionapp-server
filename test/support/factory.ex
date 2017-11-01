@@ -10,6 +10,7 @@ defmodule EstacionappServer.Factory do
         email: "tparking@gmail.com",
         location: Utils.Gis.make_coordinates([-34.480666, -58.622210]),
         password: "password",
+        outline: [%{x: 0, y: 0}],
         pricing: %{
           car: 15,
           bike: 23,
@@ -25,14 +26,14 @@ defmodule EstacionappServer.Factory do
         email: "jvalim@plataformatec.br",
         password: "password",
         vehicle: %{
-          type: "car", 
+          type: "car",
           plate: "ELX-RLZ"}
       }
     end
 
     def garage_layout_factory do
       %GarageLayout{
-        floor_level: 1, 
+        floor_level: 1,
         parking_spaces: [
           %{x: 0, y: 0, height: 10, width: 15, occupied?: true}
         ]
