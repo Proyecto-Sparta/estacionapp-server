@@ -18,7 +18,8 @@ create_garage = fn name, coordinates ->
           name: name,
           email: name <> "@gmail.com",
           location: Utils.Gis.make_coordinates(coordinates),
-          pricing: %{car: 0, bike: 0, pickup: 0}
+          pricing: %{car: 0, bike: 0, pickup: 0},
+          outline: [%{x: 0, y: 0}, %{x: 0, y: 1}, %{x: 1, y: 1}, %{x: 1, y: 0}]
   }
 end
 
