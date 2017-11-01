@@ -10,7 +10,7 @@ defmodule EstacionappServer.Factory do
         email: "tparking@gmail.com",
         location: Utils.Gis.make_coordinates([-34.480666, -58.622210]),
         password: "password",
-        outline: [%{x: 0, y: 0}],
+        outline: [%{x: 0, y: 0}, %{x: 1, y: 1}],
         pricing: %{
           car: 15,
           bike: 23,
