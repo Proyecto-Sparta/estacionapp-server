@@ -24,20 +24,21 @@ defmodule EstacionappServer.ErrorViewTest do
   test "renders 422.json of a garage" do
     changeset = Garage.changeset(%Garage{})
     assert render(EstacionappServer.ErrorView, "422.json", [reason: %{changeset: changeset}]) ==
-           %{errors: %{detail: %{email: ["can't be blank"], 
-                                 name: ["can't be blank"], 
-                                 location: ["can't be blank"], 
-                                 password: ["can't be blank"], 
+           %{errors: %{detail: %{email: ["can't be blank"],
+                                 name: ["can't be blank"],
+                                 location: ["can't be blank"],
+                                 password: ["can't be blank"],
                                  username: ["can't be blank"],
-                                 pricing: ["can't be blank"]}}}
+                                 pricing: ["can't be blank"],
+                                 outline: ["can't be blank"]}}}
   end
 
   test "renders 422.json of a driver" do
     changeset = Driver.changeset(%Driver{})
     assert render(EstacionappServer.ErrorView, "422.json", [reason: %{changeset: changeset}]) ==
-           %{errors: %{detail: %{email: ["can't be blank"], 
-                                 full_name: ["can't be blank"],                                   
-                                 password: ["can't be blank"], 
+           %{errors: %{detail: %{email: ["can't be blank"],
+                                 full_name: ["can't be blank"],
+                                 password: ["can't be blank"],
                                  username: ["can't be blank"],
                                  vehicle: ["can't be blank"]}}}
   end

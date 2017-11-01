@@ -5,7 +5,7 @@ defmodule EstacionappServer.Garage do
   import EstacionappServer.Utils.Gis
 
   alias EstacionappServer.{Repo, GarageLayout, Garage, Utils, Amenity}
-  
+
   schema "garages" do
     field :username
     field :password
@@ -15,6 +15,7 @@ defmodule EstacionappServer.Garage do
 
     has_many :layouts, GarageLayout, on_replace: :delete
     embeds_one :pricing, Garage.Pricing
+    embeds_many :outline, Garage.Outline
     many_to_many :amenities, Amenity, join_through: "garages_amenities", on_replace: :delete
 
     field :distance, :integer, virtual: true
@@ -37,6 +38,7 @@ defmodule EstacionappServer.Garage do
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
       |> cast_embed(:pricing, required: true)
+      |> cast_embed(:outline, required: true)
       |> put_amenities(params)
   end
 
@@ -48,6 +50,7 @@ defmodule EstacionappServer.Garage do
       |> closer_than(location, params["max_distance"])
       |> select_distance(location)
       |> Repo.all
+      |> Enum.map(fn (garage) -> Repo.preload(garage, :amenities) end)
   end
 
   def authenticate(%{"username" => username, "password" => pass}) do
@@ -80,13 +83,13 @@ defmodule EstacionappServer.Garage do
 
   defmodule Pricing do
     use EstacionappServer.Web, :model
-    
+
     embedded_schema do
       field :car, :integer, default: 0
       field :bike, :integer, default: 0
       field :pickup, :integer, default: 0
     end
-  
+
     def changeset(struct, params \\ %{}) do
       fields = [:car, :bike, :pickup]
       struct
@@ -94,6 +97,22 @@ defmodule EstacionappServer.Garage do
         |> validate_number(:car, greater_than_or_equal_to: 0)
         |> validate_number(:bike, greater_than_or_equal_to: 0)
         |> validate_number(:pickup, greater_than_or_equal_to: 0)
+    end
+  end
+
+  defmodule Outline do
+    use EstacionappServer.Web, :model
+
+    embedded_schema do
+      field :x, :float
+      field :y, :float
+    end
+
+    def changeset(struct, params \\ %{}) do
+      fields = [:x, :y]
+      struct
+        |> cast(params, fields)
+        |> validate_required(fields)
     end
   end
 end

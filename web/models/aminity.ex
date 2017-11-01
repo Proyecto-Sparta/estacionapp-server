@@ -11,8 +11,8 @@ defmodule EstacionappServer.Amenity do
     fields = [:description]
     struct
       |> cast(params, fields)
-      |> validate_required(fields)      
+      |> validate_required(fields)
       |> unique_constraint(:description)
-      |> validate_length(:description, min: 5)
+      |> validate_length(:description, min: 3)
   end
 end
