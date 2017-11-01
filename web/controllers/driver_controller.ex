@@ -1,11 +1,11 @@
 defmodule EstacionappServer.DriverController do
   use EstacionappServer.Web, :controller
-  
+
   alias EstacionappServer.{Driver, Repo}
 
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:update]
   plug Guardian.Plug.LoadResource when action in [:update]
-  
+
   @moduledoc """
   This is the controller for all API calls related with the drivers client.
   """
@@ -17,11 +17,13 @@ defmodule EstacionappServer.DriverController do
 
     if current_driver.id != driver_id, do: raise Error.NotFound
 
-    current_driver
+    updated = current_driver
       |> Driver.changeset(params)
       |> Repo.update!
-      
-    send_resp(conn, :ok, "")   
+
+    conn
+      |> put_status(:ok)
+      |> render("driver.json", driver: updated)
   end
 
   @doc """
@@ -57,7 +59,7 @@ defmodule EstacionappServer.DriverController do
   end
 
   defp authenticate(nil, _), do: raise Error.Unauthorized, message: "Invalid credentials."
-  
+
   defp authenticate(driver, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
     new_conn = Guardian.Plug.api_sign_in(conn, driver)
