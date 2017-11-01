@@ -50,6 +50,7 @@ defmodule EstacionappServer.Garage do
       |> closer_than(location, params["max_distance"])
       |> select_distance(location)
       |> Repo.all
+      |> Enum.map(fn (garage) -> Repo.preload(garage, :amenities) end)
   end
 
   def authenticate(%{"username" => username, "password" => pass}) do

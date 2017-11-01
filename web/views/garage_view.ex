@@ -15,7 +15,8 @@ defmodule EstacionappServer.GarageView do
       location: render_one(garage.location, __MODULE__, "location.json", as: :location),
       distance: garage.distance,
       pricing: render_one(garage.pricing, __MODULE__, "pricing.json", as: :pricing),
-      outline: render_many(garage.outline, __MODULE__, "outline.json", as: :outline)
+      outline: render_many(garage.outline, __MODULE__, "outline.json", as: :outline),
+      amenities: Enum.map(garage.amenities, fn(am) -> am.description end)
     }
   end
 

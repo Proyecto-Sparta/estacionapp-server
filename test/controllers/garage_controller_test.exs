@@ -125,7 +125,8 @@ defmodule EstacionappServer.GarageControllerTest do
       "outline" => [
         %{"x" => 0.0, "y" => 0.0},
         %{"x" => 1.0, "y" => 1.0}
-      ]
+      ],
+      "amenities" => []
     }
 
     assert json_response(resp, :ok) == %{"garages" => [garage]}
