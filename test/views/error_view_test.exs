@@ -29,8 +29,7 @@ defmodule EstacionappServer.ErrorViewTest do
                                  location: ["can't be blank"],
                                  password: ["can't be blank"],
                                  username: ["can't be blank"],
-                                 pricing: ["can't be blank"],
-                                 outline: ["can't be blank"]}}}
+                                 pricing: ["can't be blank"]}}}
   end
 
   test "renders 422.json of a driver" do
