@@ -38,7 +38,7 @@ defmodule EstacionappServer.Garage do
       |> validate_format(:email, ~r/\w+@\w+.\w+/)
       |> put_digested_password
       |> cast_embed(:pricing, required: true)
-      |> cast_embed(:outline, required: true)
+      |> cast_embed(:outline)
       |> put_amenities(params)
   end
 
@@ -50,7 +50,6 @@ defmodule EstacionappServer.Garage do
       |> closer_than(location, params["max_distance"])
       |> select_distance(location)
       |> Repo.all
-      |> Enum.map(fn (garage) -> Repo.preload(garage, :amenities) end)
   end
 
   def authenticate(%{"username" => username, "password" => pass}) do
