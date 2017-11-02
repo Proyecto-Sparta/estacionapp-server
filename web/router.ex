@@ -12,14 +12,14 @@ defmodule EstacionappServer.Router do
     scope "/drivers" do
       get "/login", DriverController, :login
       post "/", DriverController, :create
-      patch "/:id", DriverController, :update
+      patch "/", DriverController, :update
     end
     
     scope "/garages" do
       get "/login", GarageController, :login
       get "/search", GarageController, :search
       post "/", GarageController, :create
-      patch "/:id", GarageController, :update
+      patch "/", GarageController, :update
     end
 
     resources "/reservations", ReservationController, only: [:create]
