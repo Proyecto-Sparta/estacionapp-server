@@ -10,14 +10,9 @@ defmodule EstacionappServer.DriverController do
   This is the controller for all API calls related with the drivers client.
   """
 
-  def update(conn, %{"id" => driver_id} = params) do
-    driver_id = String.to_integer(driver_id)
-
-    current_driver = Guardian.Plug.current_resource(conn)
-
-    if current_driver.id != driver_id, do: raise Error.NotFound
-
-    updated = current_driver
+  def update(conn, params) do
+    updated = conn    
+      |> Guardian.Plug.current_resource
       |> Driver.changeset(params)
       |> Repo.update!
 
@@ -41,8 +36,8 @@ defmodule EstacionappServer.DriverController do
       |> Repo.insert!
 
     conn
-      |> put_status(:created)
-      |> json(%{id: driver.id})
+      |> put_status(:ok)
+      |> render("driver.json", driver: driver)
   end
 
   @doc """
@@ -66,7 +61,7 @@ defmodule EstacionappServer.DriverController do
     jwt = Guardian.Plug.current_token(new_conn)
     new_conn
       |> put_resp_header("authorization", "Bearer #{jwt}")
-      |> put_status(:accepted)
+      |> put_status(:ok)
       |> render("driver.json", driver: driver)
   end
 end

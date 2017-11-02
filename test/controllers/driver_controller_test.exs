@@ -28,13 +28,27 @@ defmodule EstacionappServer.DriverControllerTest do
 
   describe "create" do
 
-    test "with valid params creates a driver" do
-      assert json_response(valid_create(), :created)
+    setup _context do
+      {:ok, create_params: %{username: "asd123",
+                             full_name: "asd 123",
+                             email: "asd@asd.com",
+                             password: "password",
+                             vehicle: %{
+                               plate: "ASD BCD", 
+                               type: "car"}}}
+    end
+
+    test "with valid params creates a driver and returns :ok", %{create_params: create_params} do
+      response = build_conn() |> post(driver_path(@endpoint, :create), create_params)
+
+      assert json_response(response, :ok)
       assert drivers_count() == 1
     end
 
-    test "returns the id of the driver" do
-      assert json_response(valid_create(), :created) == %{"id" => last_id()}
+    test "returns ok and the driver", %{create_params: create_params} do
+      response = build_conn() |> post(driver_path(@endpoint, :create), create_params)
+
+      assert json_response(response, :ok) |> renders_driver
     end
   end
 
@@ -69,58 +83,27 @@ defmodule EstacionappServer.DriverControllerTest do
     test "with valid authorization returns a jwt token in the header and driver data" do
       response = valid_login()
       "Bearer " <> token = Plug.Conn.get_resp_header(response, "authorization") |> List.first
-      driver = Repo.one(Driver)
 
       assert String.length(token) > 1
-      assert json_response(response, :accepted) == %{ "id" => driver.id,
-                                                      "full_name" => driver.full_name,
-                                                      "email" => driver.email,
-                                                      "vehicle" => %{
-                                                        "type" => "car",
-                                                        "plate" => "ELX-RLZ"
-                                                      }
-                                                    }
+      assert json_response(response, :ok) |> renders_driver
     end
 
-    test "with valid authorization returns :accepted" do
-      assert json_response(valid_login(), :accepted)
+    test "with valid authorization returns :ok" do
+      assert json_response(valid_login(), :ok)
     end
   end
 
   describe "update" do
 
     test "changes an existing model and returns :ok" do
-      token = get_resp_header(valid_login(), "authorization") |> List.first
-      %{:id => driver_id} = Repo.one(Driver)
+      token = get_resp_header(valid_login(), "authorization") |> List.first 
+      
       response = build_conn()
         |> put_req_header("authorization", token)
-        |> patch(driver_path(@endpoint, :update, driver_id, vehicle: %{plate: "XXX YYY", type: "pickup"}))
+        |> patch(driver_path(@endpoint, :update, vehicle: %{plate: "XXX YYY", type: "pickup"}))
 
-      vehicle = Repo.one(Driver).vehicle
-      assert vehicle.plate == "XXX YYY"
-      assert vehicle.type == "pickup"
-      assert response(response, 200) =~ ""
+      assert json_response(response, :ok) |> renders_driver
     end
-
-    test "update fails if the id is not correct" do
-      token = get_resp_header(valid_login(), "authorization") |> List.first
-
-      assert_error_sent :not_found, fn ->
-        build_conn()
-          |> put_req_header("authorization", token)
-          |> patch(driver_path(@endpoint, :update, 123456))
-      end
-    end
-  end
-
-  defp valid_create do
-    build_conn()
-      |> post(driver_path(@endpoint, :create),
-          username: "asd123",
-          full_name: "asd 123",
-          email: "asd@asd.com",
-          password: "password",
-          vehicle: %{plate: "ASD BCD", type: "car"})
   end
 
   defp valid_login do
@@ -130,7 +113,16 @@ defmodule EstacionappServer.DriverControllerTest do
       |> get(driver_path(@endpoint, :login))
   end
 
-  defp last_id, do: Driver |> last |> Repo.one |> Map.get(:id)
+  defp renders_driver(response) do
+    driver = Repo.one(Driver)
+    vehicle = driver.vehicle
+    response == %{ "id" => driver.id,
+                   "full_name" => driver.full_name,
+                   "email" => driver.email,
+                   "vehicle" => %{
+                     "type" => vehicle.type,
+                     "plate" => vehicle.plate}}
+  end
 
   defp drivers_count, do: Repo.aggregate(Driver, :count, :id)
 end
