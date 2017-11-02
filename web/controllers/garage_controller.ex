@@ -8,40 +8,39 @@ defmodule EstacionappServer.GarageController do
   plug :sanitize_search_params when action in [:search]
   
   @moduledoc """
-  This is the controller for all API calls related with the garages client.
+  This is the controller for all API calls related with garages.
   """
 
   @doc """
   Inserts a new Garage.
-  Returns the inserted garage id or a hash with changeset errors.  
+  Returns the garage or a hash with the changeset errors. 
   """
   def create(conn, params) do
     params = Map.update(params, "location", nil, &Utils.Gis.make_coordinates/1)
     garage = %Garage{}
       |> Garage.changeset(params)
       |> Repo.insert!
+      |> Repo.preload([:amenities, :layouts])
       
     conn
-      |> put_status(:created)
-      |> json(%{id: garage.id})      
+      |> put_status(:ok)
+      |> render("show.json", garage: garage)      
   end
 
   @doc """
-  Updates an existing.
-  Returns the inserted garage id or a hash with changeset errors.
+  Updates an existing garage.
+  Returns the updated garage or a hash with the changeset errors.
   """
-  def update(conn, %{"id" => garage_id} = params) do
-    garage_id = String.to_integer(garage_id)
-
-    current_garage = Guardian.Plug.current_resource(conn)
-
-    if current_garage.id != garage_id, do: raise Error.NotFound
-
-    current_garage
+  def update(conn, params) do
+    updated_garage = conn
+      |> Guardian.Plug.current_resource
       |> Garage.changeset(params)
       |> Repo.update!
+      |> Repo.preload([:amenities, :layouts])
       
-    send_resp(conn, :ok, "")   
+    conn
+      |> put_status(:ok)
+      |> render("show.json", garage: updated_garage)      
   end
 
   @doc """
@@ -54,26 +53,25 @@ defmodule EstacionappServer.GarageController do
   """
   def search(conn, params) do
     garages = params
-      |> Garage.close_to   
+      |> Garage.close_to
+      |> Repo.preload([:amenities, :layouts])   
 
     render(conn, "search.json", garages: garages)
   end
 
   @doc """
   Authenticates a garage.
-  Returns the jwt token inside authorization header.
-  Params:{
-    username: string
-  }
+  Returns the jwt token inside authorization header and the logged in garage.
+  Header authorization must contain `Basic ${username}:${password}` hashed in B64
   """
   def login(conn, params) do
     params
       |> Garage.authenticate
-      |> case do
-        nil -> raise Error.Unauthorized, message: "Invalid credentials."
-        garage -> authenticate(garage, conn)
-      end   
+      |> Repo.preload([:amenities, :layouts])
+      |> authenticate(conn)
   end  
+
+  defp authenticate(nil, _), do: raise Error.Unauthorized, message: "Invalid credentials."
 
   defp authenticate(garage, conn) do
     if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
@@ -81,8 +79,8 @@ defmodule EstacionappServer.GarageController do
     jwt = Guardian.Plug.current_token(new_conn)
     new_conn
       |> put_resp_header("authorization", "Bearer #{jwt}")
-      |> put_status(:accepted)
-      |> json(%{status: "logged in"})
+      |> put_status(:ok)
+      |> render("show.json", garage: garage)
   end
 
   defp sanitize_search_params(%{:params => params} = conn, _) do
