@@ -9,7 +9,7 @@ defmodule EstacionappServer.Factory do
         name: "Torcuato Parking",
         email: "tparking@gmail.com",
         location: Utils.Gis.make_coordinates([-34.480666, -58.622210]),
-        password: "password",
+        password: Utils.Crypto.encrypt("password"),
         outline: [%{x: 0, y: 0}, %{x: 1, y: 1}],
         pricing: %{
           car: 15,
@@ -24,7 +24,7 @@ defmodule EstacionappServer.Factory do
         username: "joValim",
         full_name: "Jose Valim",
         email: "jvalim@plataformatec.br",
-        password: "password",
+        password: Utils.Crypto.encrypt("password"),
         vehicle: %{
           type: "car",
           plate: "ELX-RLZ"}

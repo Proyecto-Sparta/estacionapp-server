@@ -50,9 +50,6 @@ end
  create_amenity.("manejan", 8)]
   |> Enum.each(&Repo.insert!/1)
 
-
-Repo.all(Amenity) |> IO.inspect
-
 [create_driver.("Chris McCord"), create_driver.("Ellon Musk")]
   |> Enum.each(&Repo.insert!/1)
 

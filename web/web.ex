@@ -60,7 +60,7 @@ defmodule EstacionappServer.Web do
             |> String.slice(6..-1)
             |> Base.decode64!
             |> String.split(":")
-          Map.put(conn, :params, %{"username" => user, "password" => pass})
+          Map.put(conn, :params, %{"username" => user, "password" => Utils.Crypto.encrypt(pass)})
         rescue
           _ -> raise Error.BadRequest, message: "Error trying to authenticate. Check Authorization header."
         end
