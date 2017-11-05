@@ -23,6 +23,4 @@ config :estacionapp_server, EstacionappServer.Repo,
 config :cipher, keyphrase: "testiekeyphraseforcipher",
   ivphrase: "testieivphraseforcipher",
   magic_token: "magictoken"
-
-config :cors_plug, CORSPlug,
-  origin: ['*']
+  
