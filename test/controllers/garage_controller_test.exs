@@ -79,7 +79,7 @@ defmodule EstacionappServer.GarageControllerTest do
     test "without authorization returns :bad_request" do
       assert_error_sent :bad_request, fn ->
         build_conn()
-        |> get(garage_path(@endpoint, :login))
+        |> post(garage_path(@endpoint, :login))
       end
     end
     
@@ -87,7 +87,7 @@ defmodule EstacionappServer.GarageControllerTest do
       assert_error_sent :bad_request, fn ->
         build_conn()
         |> put_req_header("authorization", "foobar")
-        |> get(garage_path(@endpoint, :login))
+        |> post(garage_path(@endpoint, :login))
       end
     end
     
@@ -95,7 +95,7 @@ defmodule EstacionappServer.GarageControllerTest do
       assert_error_sent :unauthorized, fn ->
         build_conn()
         |> put_req_header("authorization", "Basic am9zZTpqb3NlMTIz")
-        |> get(garage_path(@endpoint, :login))
+        |> post(garage_path(@endpoint, :login))
       end
     end
   end

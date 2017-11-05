@@ -57,7 +57,7 @@ defmodule EstacionappServer.DriverControllerTest do
     test "without authorization returns :bad_request" do
       assert_error_sent :bad_request, fn ->
         build_conn()
-          |> get(driver_path(@endpoint, :login))
+          |> post(driver_path(@endpoint, :login))
       end
     end
 
@@ -65,7 +65,7 @@ defmodule EstacionappServer.DriverControllerTest do
       assert_error_sent :bad_request, fn ->
         build_conn()
           |> put_req_header("authorization", "foobar")
-          |> get(driver_path(@endpoint, :login))
+          |> post(driver_path(@endpoint, :login))
       end
     end
 
@@ -73,7 +73,7 @@ defmodule EstacionappServer.DriverControllerTest do
       assert_error_sent :unauthorized, fn ->
         build_conn()
           |> put_req_header("authorization", "Basic am9zZTpqb3NlMTIz")
-          |> get(driver_path(@endpoint, :login))
+          |> post(driver_path(@endpoint, :login))
       end
     end
   end
@@ -110,7 +110,7 @@ defmodule EstacionappServer.DriverControllerTest do
     insert(:driver)
     build_conn()
       |> put_req_header("authorization", "Basic " <> Base.encode64("joValim:password"))
-      |> get(driver_path(@endpoint, :login))
+      |> post(driver_path(@endpoint, :login))
   end
 
   defp renders_driver(response) do

@@ -35,7 +35,7 @@ defmodule EstacionappServer.ConnCase do
         insert(:garage)
         build_conn()
           |> put_req_header("authorization", "Basic " <> Base.encode64("garageuser123:password"))
-          |> get(garage_path(@endpoint, :login))
+          |> post(garage_path(@endpoint, :login))
       end
 
       defp garage_jwt, do: get_resp_header(valid_garage_login(), "authorization") |> List.first
