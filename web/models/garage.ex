@@ -52,12 +52,6 @@ defmodule EstacionappServer.Garage do
       |> Repo.all
   end
 
-  def authenticate(%{"username" => username, "password" => pass}) do
-    Garage
-      |> where(username: ^username, password: ^pass)
-      |> Repo.one
-  end
-
   defp closer_than(queryable, _, nil), do: queryable
 
   defp closer_than(queryable, location, distance) do

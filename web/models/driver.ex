@@ -28,12 +28,6 @@ defmodule EstacionappServer.Driver do
       |> put_digested_password
   end
 
-  def authenticate(%{"username" => username, "password" => pass}) do
-    Driver
-      |> where(username: ^username, password: ^pass)
-      |> Repo.one
-  end
-
   defmodule Vehicle do
     use EstacionappServer.Web, :model
     

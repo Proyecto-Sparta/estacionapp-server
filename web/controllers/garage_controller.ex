@@ -65,24 +65,12 @@ defmodule EstacionappServer.GarageController do
   Header authorization must contain `Basic ${username}:${password}` hashed in B64
   """
   def login(conn, params) do
-    params
-      |> Garage.authenticate
-      |> Repo.preload([:amenities, :layouts])
-      |> authenticate(conn)
+    garage = Garage.from_credentials(params)
+    
+    conn
+      |> put_authorization(garage)
+      |> render("show.json", garage:  Repo.preload(garage, [:amenities, :layouts]))
   end  
-
-  defp authenticate(nil, _), do: raise Error.Unauthorized, message: "Invalid credentials."
-
-  defp authenticate(garage, conn) do
-    if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
-    new_conn = Guardian.Plug.api_sign_in(conn, garage)
-    jwt = Guardian.Plug.current_token(new_conn)
-    new_conn
-      |> put_resp_header("access-control-expose-headers", "authorization")
-      |> put_resp_header("authorization", "Bearer #{jwt}")
-      |> put_status(:ok)
-      |> render("show.json", garage: garage)
-  end
 
   defp sanitize_search_params(%{:params => params} = conn, _) do
     try do

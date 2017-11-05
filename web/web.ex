@@ -35,6 +35,12 @@ defmodule EstacionappServer.Web do
           changeset
         end
       end
+
+      def from_credentials(%{"username" => username, "password" => pass}) do
+        __MODULE__
+          |> where(username: ^username, password: ^pass)
+          |> Repo.one
+      end
     end
   end
 
@@ -66,7 +72,20 @@ defmodule EstacionappServer.Web do
         end
       end
 
-      def unauthenticated(_, _), do: raise Error.Unauthorized, message: "Invalid credentials."
+      defp unauthorized, do: raise Error.Unauthorized, message: "Invalid credentials."
+      
+      def unauthenticated(_, _), do: unauthorized()
+      
+      defp put_authorization(_, nil), do: unauthorized()
+
+      defp put_authorization(conn, model) do
+        if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
+        new_conn = Guardian.Plug.api_sign_in(conn, model)
+        jwt = Guardian.Plug.current_token(new_conn)
+        new_conn
+          |> put_resp_header("authorization", "Bearer #{jwt}")          
+          |> put_status(:ok)
+      end
     end
   end
 

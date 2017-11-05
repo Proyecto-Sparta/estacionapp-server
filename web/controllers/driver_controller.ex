@@ -48,20 +48,10 @@ defmodule EstacionappServer.DriverController do
   }
   """
   def login(conn, params) do
-    params
-      |> Driver.authenticate
-      |> authenticate(conn)
-  end
-
-  defp authenticate(nil, _), do: raise Error.Unauthorized, message: "Invalid credentials."
-
-  defp authenticate(driver, conn) do
-    if Guardian.Plug.authenticated?(conn), do: Guardian.Plug.sign_out(conn)
-    new_conn = Guardian.Plug.api_sign_in(conn, driver)
-    jwt = Guardian.Plug.current_token(new_conn)
-    new_conn
-      |> put_resp_header("authorization", "Bearer #{jwt}")
-      |> put_status(:ok)
+    driver = Driver.from_credentials(params)
+    
+    conn
+      |> put_authorization(driver)
       |> render("driver.json", driver: driver)
   end
 end
