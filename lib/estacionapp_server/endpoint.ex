@@ -1,4 +1,4 @@
-defmodule EstacionappServer.Endpoint do
+defmodule EstacionappServer.Endpoint do  
   use Phoenix.Endpoint, otp_app: :estacionapp_server
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -33,8 +33,7 @@ defmodule EstacionappServer.Endpoint do
     store: :cookie,
     key: "_estacionapp_server_key",
     signing_salt: "7tpwzWff"
-
-  plug CORSPlug
-    
+  
+  plug Corsica, origins: "*", allow_headers: ~W(accept authorization content-type)
   plug EstacionappServer.Router
 end

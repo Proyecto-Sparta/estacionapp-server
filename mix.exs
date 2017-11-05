@@ -40,7 +40,7 @@ defmodule EstacionappServer.Mixfile do
      {:guardian, "~> 0.14.2"},
      {:ex_machina, "~> 2.0", only: :test},
      {:cipher, ">= 1.3.0"},
-     {:cors_plug, "~> 1.2"}]
+     {:corsica, "~> 1.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
