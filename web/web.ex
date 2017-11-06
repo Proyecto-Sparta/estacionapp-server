@@ -83,6 +83,7 @@ defmodule EstacionappServer.Web do
         new_conn = Guardian.Plug.api_sign_in(conn, model)
         jwt = Guardian.Plug.current_token(new_conn)
         new_conn
+          |> put_resp_header("access-control-expose-headers", "authorization") 
           |> put_resp_header("authorization", "Bearer #{jwt}")          
           |> put_status(:ok)
       end
