@@ -18,7 +18,7 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
 
     layouts = [
       %{"id" => id, "floor_level" => 1, "parking_spaces" => [
-          %{"id" => space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied?" =>  true}
+          %{"id" => space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied?" =>  true, "shape" => "square", "angle" => 0.0}
         ]
       }
     ]

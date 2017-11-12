@@ -8,7 +8,7 @@ defmodule EstacionappServer.GarageLayoutTest do
   test "changeset with valid attributes" do
     %{:id => garage_id} = insert(:garage)
 
-    parking_spaces = [%{x: 1, y: 0, height: 10, width: 15, ocupied?: false}]
+    parking_spaces = [%{x: 1, y: 0, height: 10, width: 15, ocupied?: false, shape: "square", angle: 0}]
 
     valid_params = %{garage_id: garage_id, floor_level: 1, parking_spaces: parking_spaces}
 

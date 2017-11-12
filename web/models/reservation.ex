@@ -14,13 +14,10 @@ defmodule EstacionappServer.Reservation do
   end 
  
   def changeset(struct, params \\ %{}) do 
-    fields = [:parking_space_id, :status] 
-   
+    fields = [:parking_space_id, :status, :driver_id, :garage_layout_id] 
     struct 
       |> cast(params, fields)
-      |> validate_inclusion(:status, 0..3)
-      |> cast_assoc(:driver)
-      |> cast_assoc(:garage_layout)
+      |> validate_inclusion(:status, 0..2)
       |> assoc_constraint(:driver)
       |> assoc_constraint(:garage_layout)
     end 

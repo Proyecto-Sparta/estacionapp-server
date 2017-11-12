@@ -11,8 +11,8 @@ defmodule EstacionappServer.ReservationController do
 
     reservation = %Reservation{} 
       |> Reservation.changeset(params)
-      |> Repo.insert! 
-       
+      |> Repo.insert!
+      
     conn 
       |> put_status(:created) 
       |> json(%{id: reservation.id})       

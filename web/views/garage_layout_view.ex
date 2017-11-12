@@ -3,15 +3,15 @@ defmodule EstacionappServer.GarageLayoutView do
 
   def render("index.json", %{layouts: layouts}) do
     %{
-      layouts: render_many(layouts, __MODULE__, "show.json")
+      layouts: render_many(layouts, __MODULE__, "show.json", as: :garage_layout)
     }
   end
 
-  def render("show.json", %{garage_layout: layout}) do
+  def render("show.json", %{garage_layout: garage_layout}) do
     %{
-      id: layout.id,
-      floor_level: layout.floor_level,
-      parking_spaces: layout.parking_spaces
+      id: garage_layout.id,
+      floor_level: garage_layout.floor_level,
+      parking_spaces: garage_layout.parking_spaces
     }
   end
 end

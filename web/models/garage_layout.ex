@@ -21,6 +21,7 @@ defmodule EstacionappServer.GarageLayout do
       |> cast(params, fields)
       |> validate_required(fields)
       |> cast_embed(:parking_spaces, required: true)
+      |> cast_assoc(:garage)
       |> assoc_constraint(:garage)
   end
 
@@ -28,18 +29,21 @@ defmodule EstacionappServer.GarageLayout do
     use EstacionappServer.Web, :model
     
     embedded_schema do
+      field :shape
       field :x, :float
       field :y, :float
       field :height, :float
       field :width, :float
+      field :angle, :float
       field :occupied?, :boolean, default: false
     end
   
     def changeset(struct, params \\ %{}) do
-      fields = [:x, :y, :height, :width, :occupied?]
+      fields = [:x, :y, :height, :width, :occupied?, :angle, :shape]
       struct
         |> cast(params, fields)
         |> validate_required(fields)
+        |> validate_inclusion(:shape, ["square", "circle"])
     end
   end
 end

@@ -22,13 +22,13 @@ defmodule EstacionappServer.GarageLayoutController do
       |> GarageLayout.changeset(params)
       |> Repo.insert!
     
-    render(conn, "show.json", layout: layout)
+    render(conn, "show.json", garage_layout: layout)
   end  
 
   def update(conn, params) do
     conn.assigns.layout
       |> GarageLayout.changeset(params)
-      |> Repo.update!
+      |> Repo.update!      
 
     send_resp(conn, :ok, "")  
   end  
