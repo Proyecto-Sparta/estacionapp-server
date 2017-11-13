@@ -15,7 +15,7 @@ defmodule EstacionappServer.Garage do
 
     has_many :layouts, GarageLayout, on_replace: :delete
     embeds_one :pricing, Garage.Pricing
-    embeds_many :outline, Garage.Outline
+    embeds_many :outline, Garage.Outline, on_replace: :delete
     many_to_many :amenities, Amenity, join_through: "garages_amenities", on_replace: :delete
 
     field :distance, :integer, virtual: true

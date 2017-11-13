@@ -9,7 +9,7 @@ defmodule EstacionappServer.ReservationController do
   def create(conn, params) do 
     params = Params.ReservationCreate.validate(params)
 
-    reservation = %Reservation{} 
+    reservation = Reservation.with_initial_status
       |> Reservation.changeset(params)
       |> Repo.insert!
       
