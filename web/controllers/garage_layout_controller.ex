@@ -26,11 +26,13 @@ defmodule EstacionappServer.GarageLayoutController do
   end  
 
   def update(conn, params) do
-    conn.assigns.layout
+    updated = conn.assigns.layout
       |> GarageLayout.changeset(params)
-      |> Repo.update!      
-
-    send_resp(conn, :ok, "")  
+      |> Repo.update!   
+      
+    conn
+      |> put_status(:ok)
+      |> render("show.json", garage_layout: updated)      
   end  
 
   def delete(conn, _params) do

@@ -6,7 +6,7 @@ defmodule EstacionappServer.GarageLayout do
   schema "garage_layouts" do
     field :floor_level, :integer
     
-    embeds_many :parking_spaces, GarageLayout.ParkingSpace
+    embeds_many :parking_spaces, GarageLayout.ParkingSpace, on_replace: :delete
     belongs_to :garage, Garage
 
     timestamps()
