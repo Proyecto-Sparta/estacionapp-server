@@ -11,7 +11,7 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
     driver = insert(:driver)    
     garage = Repo.one(Garage)
     %{:id => garage_layout_id, :parking_spaces => [space]} = insert(:garage_layout, garage_id: garage.id)
-    reservation = insert(:reservation, garage_layout_id: garage_layout_id, driver_id: driver.id, parking_space_id: space.id)
+    reservation = insert(:reservation, garage_layout_id: garage_layout_id, driver_id: driver.id, parking_space_id: space.id, valid?: true)
 
 
     response = build_conn()

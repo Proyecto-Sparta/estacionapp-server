@@ -22,7 +22,7 @@ defmodule EstacionappServer.Router do
       patch "/", GarageController, :update
     end
 
-    resources "/reservations", ReservationController, only: [:create]
+    resources "/reservations", ReservationController, only: [:create, :update]
     resources "/layouts", GarageLayoutController, only: [:index, :create, :update, :delete]
   end
 end
