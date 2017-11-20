@@ -9,12 +9,12 @@ defmodule EstacionappServer.ReservationController do
   def create(conn, params) do 
     params = Params.ReservationCreate.validate(params)
 
-    reservation = Reservation.with_initial_status
+    reservation = %Reservation{valid?: true}
       |> Reservation.changeset(params)
       |> Repo.insert!
       
     conn 
-      |> put_status(:created) 
+      |> put_status(:ok) 
       |> json(%{id: reservation.id})       
   end
 end
