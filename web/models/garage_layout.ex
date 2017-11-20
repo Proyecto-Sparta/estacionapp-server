@@ -27,7 +27,7 @@ defmodule EstacionappServer.GarageLayout do
   end
 
   def valid_reservations do
-    from(r in Reservation, where: r.valid? == true)
+    from(r in Reservation, where: r.valid? == true, preload: :driver)
   end  
 
   defmodule ParkingSpace do

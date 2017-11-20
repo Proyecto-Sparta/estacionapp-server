@@ -11,10 +11,9 @@ defmodule EstacionappServer.GarageLayoutController do
     current_garage = conn
       |> Guardian.Plug.current_resource
       |> Repo.preload(layouts: [reservations: GarageLayout.valid_reservations])
-      
         
     conn
-      |> put_status(:created)
+      |> put_status(:ok)
       |> render("index.json", layouts: current_garage.layouts)
   end  
 

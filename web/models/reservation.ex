@@ -4,7 +4,7 @@ defmodule EstacionappServer.Reservation do
   alias EstacionappServer.{GarageLayout, Driver} 
 
   schema "reservations" do 
-    field :parking_space_id 
+    field :parking_space_id  
     field :valid?, :boolean
     
     belongs_to :driver, Driver 

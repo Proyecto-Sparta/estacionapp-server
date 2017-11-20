@@ -8,23 +8,38 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
   end
 
   test "index returns all layouts of the current garage", jwt do
+    driver = insert(:driver)    
     garage = Repo.one(Garage)
+    %{:id => garage_layout_id, :parking_spaces => [space]} = insert(:garage_layout, garage_id: garage.id)
+    reservation = insert(:reservation, garage_layout_id: garage_layout_id, driver_id: driver.id, parking_space_id: space.id)
 
-    %{:id => id, :parking_spaces => [space]} = insert(:garage_layout, garage_id: garage.id)
 
     response = build_conn()
       |> put_req_header("authorization", jwt.token) 
       |> get(garage_layout_path(@endpoint, :index))
 
     layouts = [
-      %{"id" => id, "floor_level" => 1, "parking_spaces" => [
+      %{"id" => garage_layout_id, "floor_level" => 1, "parking_spaces" => [
           %{"id" => space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied?" =>  true, "shape" => "square", "angle" => 0.0}
         ],
-        "reservations" => []
+        "reservations" => [ 
+          %{
+            "driver" => %{
+              "id" => driver.id,
+              "email" => driver.email,
+              "full_name" => driver.full_name,
+              "vehicle" => %{
+                "type" => "car",
+                "plate" => "ELX-RLZ"
+              }
+            },
+            "id" => reservation.id            
+          }
+        ]
       }
     ]
     
-    assert json_response(response, :created) == %{"layouts" => layouts}
+    assert json_response(response, :ok) == %{"layouts" => layouts}
   end
 
   test "index returns unauthorized if jwt is invalid or not given" do

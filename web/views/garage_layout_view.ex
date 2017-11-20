@@ -12,7 +12,7 @@ defmodule EstacionappServer.GarageLayoutView do
       id: garage_layout.id,
       floor_level: garage_layout.floor_level,
       parking_spaces: garage_layout.parking_spaces,
-      reservations: garage_layout.reservations
+      reservations: render_many(garage_layout.reservations, EstacionappServer.ReservationView, "show.json", as: :reservation)
     }
   end
 end

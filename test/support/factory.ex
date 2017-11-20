@@ -1,7 +1,7 @@
 defmodule EstacionappServer.Factory do
   use ExMachina.Ecto, repo: EstacionappServer.Repo
 
-  alias EstacionappServer.{Garage, Driver, Utils, GarageLayout, Amenity}
+  alias EstacionappServer.{Garage, Driver, Utils, GarageLayout, Amenity, Reservation}
 
     def garage_factory do
       %Garage{
@@ -35,12 +35,16 @@ defmodule EstacionappServer.Factory do
       %GarageLayout{
         floor_level: 1,
         parking_spaces: [
-          %{x: 0, y: 0, height: 10, width: 15, occupied?: true, shape: "square", angle: 0}
+          %{id: "foo", x: 0, y: 0, height: 10, width: 15, occupied?: true, shape: "square", angle: 0}
         ]
       }
     end
 
     def amenity_factory do
       %Amenity{description: "Lavamos autos"}
+    end
+
+    def reservation_factory do
+      %Reservation{valid?: true}
     end
 end
