@@ -10,7 +10,8 @@ defmodule EstacionappServer.GarageLayoutController do
   def index(conn, _params) do
     current_garage = conn
       |> Guardian.Plug.current_resource
-      |> Repo.preload(:layouts)
+      |> Repo.preload(layouts: [reservations: GarageLayout.valid_reservations])
+      
         
     conn
       |> put_status(:created)
@@ -21,7 +22,8 @@ defmodule EstacionappServer.GarageLayoutController do
     layout = %GarageLayout{}
       |> GarageLayout.changeset(params)
       |> Repo.insert!
-    
+      |> Repo.preload(reservations: GarageLayout.valid_reservations)
+      
     render(conn, "show.json", garage_layout: layout)
   end  
 
@@ -29,6 +31,7 @@ defmodule EstacionappServer.GarageLayoutController do
     updated = conn.assigns.layout
       |> GarageLayout.changeset(params)
       |> Repo.update!   
+      |> Repo.preload(reservations: GarageLayout.valid_reservations)
       
     conn
       |> put_status(:ok)

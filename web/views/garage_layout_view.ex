@@ -11,7 +11,8 @@ defmodule EstacionappServer.GarageLayoutView do
     %{
       id: garage_layout.id,
       floor_level: garage_layout.floor_level,
-      parking_spaces: garage_layout.parking_spaces
+      parking_spaces: garage_layout.parking_spaces,
+      reservations: garage_layout.reservations
     }
   end
 end

@@ -1,13 +1,14 @@
 defmodule EstacionappServer.GarageLayout do
   use EstacionappServer.Web, :model
 
-  alias EstacionappServer.Garage
+  alias EstacionappServer.{Garage, Reservation}
 
   schema "garage_layouts" do
     field :floor_level, :integer
     
     embeds_many :parking_spaces, GarageLayout.ParkingSpace, on_replace: :delete
     belongs_to :garage, Garage
+    has_many :reservations, Reservation
 
     timestamps()
   end
@@ -24,6 +25,10 @@ defmodule EstacionappServer.GarageLayout do
       |> cast_assoc(:garage)
       |> assoc_constraint(:garage)
   end
+
+  def valid_reservations do
+    from(r in Reservation, where: r.valid? == true)
+  end  
 
   defmodule ParkingSpace do
     use EstacionappServer.Web, :model
