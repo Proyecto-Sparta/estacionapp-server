@@ -31,9 +31,9 @@ defmodule EstacionappServer.ReservationControllerTest do
  
       build_conn() 
         |> put_req_header("authorization", token)
-        |> patch(reservation_path(@endpoint, :update, reservation.id), valid?: true)
+        |> patch(reservation_path(@endpoint, :update, reservation.id), valid: true)
                             
-      assert Repo.one(Reservation).valid? == true
+      assert Repo.one(Reservation).valid == true
     end        
   end
  

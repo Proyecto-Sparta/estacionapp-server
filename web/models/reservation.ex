@@ -5,7 +5,7 @@ defmodule EstacionappServer.Reservation do
 
   schema "reservations" do 
     field :parking_space_id  
-    field :valid?, :boolean
+    field :valid, :boolean
     
     belongs_to :driver, Driver 
     belongs_to :garage_layout, GarageLayout
@@ -14,7 +14,7 @@ defmodule EstacionappServer.Reservation do
   end 
  
   def changeset(struct, params \\ %{}) do 
-    fields = [:parking_space_id, :valid?, :driver_id, :garage_layout_id]
+    fields = [:parking_space_id, :valid, :driver_id, :garage_layout_id]
     struct 
       |> cast(params, fields)
       |> validate_required(fields)
@@ -23,6 +23,6 @@ defmodule EstacionappServer.Reservation do
   end 
 
   def preload_valid_reservations do
-    [reservations: from(r in Reservation, where: r.valid? == true, preload: :driver)]
+    [reservations: from(r in Reservation, where: r.valid == true, preload: :driver)]
   end  
 end 

@@ -10,7 +10,7 @@ defmodule EstacionappServer.ReservationController do
   def create(conn, params) do 
     params = Params.ReservationCreate.validate(params)
 
-    reservation = %Reservation{valid?: true}
+    reservation = %Reservation{valid: true}
       |> Reservation.changeset(params)
       |> Repo.insert!
       

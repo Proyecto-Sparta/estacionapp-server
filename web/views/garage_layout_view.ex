@@ -1,8 +1,6 @@
 defmodule EstacionappServer.GarageLayoutView do
   use EstacionappServer.Web, :view
 
-  alias EstacionappServer.GarageLayout
-
   def render("index.json", %{garage_layouts: layouts}) do
     %{
       layouts: render_many(layouts, __MODULE__, "show.json", as: :garage_layout)

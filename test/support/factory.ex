@@ -45,6 +45,6 @@ defmodule EstacionappServer.Factory do
     end
 
     def reservation_factory do
-      %Reservation{valid?: false}
+      %Reservation{valid: false}
     end
 end
