@@ -28,7 +28,7 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   describe "create" do
-    
+
     setup _context do
       {:ok, create_params: %{username: "asd123", full_name: "asd 123",
                               email: "asd@asd.com", password: "password",
@@ -36,7 +36,7 @@ defmodule EstacionappServer.GarageControllerTest do
                               pricing: %{car: 0, bike: 0, pickup: 0},
                               vehicle: %{ plate: "ASD BCD", type: "car"}}}
     end
-        
+
     test "creates a garage", %{create_params: create_params} do
       build_conn() |> post(garage_path(@endpoint, :create), create_params)
       assert garages_count() == 1
@@ -50,6 +50,7 @@ defmodule EstacionappServer.GarageControllerTest do
                                                "name" => garage.name,
                                                "email" => garage.email,
                                                "location" => [0, 0],
+                                               "distance" => nil,
                                                "pricing" => %{
                                                  "id" => pricing.id,
                                                  "car" => pricing.car,
@@ -61,28 +62,28 @@ defmodule EstacionappServer.GarageControllerTest do
                                                "amenities" => garage.amenities}
     end
   end
-  
+
   describe "update" do
-    
+
     test "changes and returns :ok and the garage" do
       token = garage_jwt()
       response = build_conn()
         |> put_req_header("authorization", token)
         |> patch(garage_path(@endpoint, :update, email: "yo@internet.com"))
-  
+
       assert json_response(response, :ok) |> renders_garage
     end
   end
 
   describe "login with errors" do
-    
+
     test "without authorization returns :bad_request" do
       assert_error_sent :bad_request, fn ->
         build_conn()
         |> post(garage_path(@endpoint, :login))
       end
     end
-    
+
     test "with wrong authorization returns :bad_request" do
       assert_error_sent :bad_request, fn ->
         build_conn()
@@ -90,7 +91,7 @@ defmodule EstacionappServer.GarageControllerTest do
         |> post(garage_path(@endpoint, :login))
       end
     end
-    
+
     test "with invalid authorization returns :unauthorized" do
       assert_error_sent :unauthorized, fn ->
         build_conn()
@@ -99,30 +100,30 @@ defmodule EstacionappServer.GarageControllerTest do
       end
     end
   end
-    
+
 
   describe "login" do
-    
+
     test "returns :ok and the garage" do
       assert json_response(valid_garage_login(), :ok) |> renders_garage
     end
-  
+
     test "returns a jwt token in the header" do
       "Bearer " <> token = garage_jwt()
-  
+
       assert String.length(token) > 1
     end
   end
 
   describe "search with errors" do
-    
+
     test "without jwt returns :unauthorized" do
       assert_error_sent :unauthorized, fn ->
         build_conn()
           |> get(garage_path(@endpoint, :search, latitude: 0, longuitude: 0))
       end
     end
-  
+
     test "with jwt and missing parameters returns :bad_request" do
       token = garage_jwt()
       assert_error_sent :bad_request, fn ->
@@ -134,11 +135,11 @@ defmodule EstacionappServer.GarageControllerTest do
   end
 
   describe "search" do
-    
+
     test "with jwt returns :ok and garages" do
       resp = valid_search()
       %{:id => garage_id, :pricing => %{:id => pricing_id}} = Repo.one(Garage)
-  
+
       garage = %{
         "id" => garage_id,
         "name" => "Torcuato Parking",
@@ -155,9 +156,10 @@ defmodule EstacionappServer.GarageControllerTest do
           %{"x" => 0.0, "y" => 0.0},
           %{"x" => 1.0, "y" => 1.0}
         ],
-        "amenities" => []
+        "amenities" => [],
+        "layouts" => []
       }
-  
+
       assert json_response(resp, :ok) == %{"garages" => [garage]}
     end
   end
@@ -166,7 +168,7 @@ defmodule EstacionappServer.GarageControllerTest do
     garage = Repo.one(Garage) |> Repo.preload([:amenities, :layouts])
     pricing = garage.pricing
 
-    response == %{
+    Map.delete(response, "distance") == %{
       "id" => garage.id,
       "name" => garage.name,
       "email" => garage.email,
