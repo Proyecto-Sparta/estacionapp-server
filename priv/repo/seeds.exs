@@ -21,7 +21,7 @@ defmodule EstacionappServer.Seeds do
       email: name <> "@gmail.com",
       location: Utils.Gis.make_coordinates(coordinates),
       pricing: %{car: 0, bike: 0, pickup: 0},
-      outline: [%{x: 100, y: 100}, %{x: 1000, y: 100}, %{x: 1000, y: 1000}, %{x: 100, y: 1000}, %{x: 100, y: 100}],
+      outline: [%{x: 25, y: 18 }, %{x: 855, y: 13}, %{x: 858, y: 576}, %{x: 45, y: 579}],
       amenities: [1, 2, 3, 4, 9]
     })
   end
@@ -40,56 +40,15 @@ defmodule EstacionappServer.Seeds do
   def build_garage_layout(id) do
     GarageLayout.changeset(%GarageLayout{}, %{
       garage_id: id, floor_level: 1, parking_spaces: [
-        %{ x: 100, y: 100, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 100, y: 175, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 100, y: 250, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 100, y: 325, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 100, y: 400, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 100, y: 475, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 100, y: 550, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 100, y: 625, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 100, y: 700, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 100, y: 775, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 100, y: 850, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 100, y: 925, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 450, y: 100, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 450, y: 175, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 450, y: 250, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 450, y: 325, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 450, y: 400, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 450, y: 475, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 450, y: 550, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 450, y: 625, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 450, y: 700, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 450, y: 775, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 450, y: 850, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 450, y: 925, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-
-        %{ x: 550, y: 100, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 175, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 550, y: 250, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 325, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 400, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 550, y: 475, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 550, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 625, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 550, y: 700, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 775, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 550, y: 850, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 550, y: 925, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-
-        %{ x: 900, y: 100, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 175, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 250, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 325, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 400, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 475, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 900, y: 550, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 625, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 700, height: 100, width: 75, angle: 0, occupied: true , shape: "square" },
-        %{ x: 900, y: 775, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 850, height: 100, width: 75, angle: 0, occupied: false, shape: "square" },
-        %{ x: 900, y: 925, height: 100, width: 75, angle: 0, occupied: false, shape: "square" }
+        %{ x: 100, y: 100, width: 75, height: 100, occupied: true , shape: "square", angle: 0 },
+        %{ x: 100, y: 250, width: 75, height: 100, occupied: true , shape: "square", angle: 0 },
+        %{ x: 100, y: 400, width: 75, height: 100, occupied: true , shape: "square", angle: 0 },
+        %{ x: 450, y: 100, width: 75, height: 100, occupied: true , shape: "square", angle: 0 },
+        %{ x: 450, y: 250, width: 75, height: 100, occupied: true , shape: "square", angle: 0 },
+        %{ x: 450, y: 400, width: 75, height: 100, occupied: true , shape: "square", angle: 0 },
+        %{ x: 550, y: 100, width: 75, height: 100, occupied: false, shape: "square", angle: 0 },
+        %{ x: 550, y: 250, width: 75, height: 100, occupied: false, shape: "square", angle: 0 },
+        %{ x: 550, y: 400, width: 75, height: 100, occupied: true , shape: "square", angle: 0 }
       ]
     })
   end
