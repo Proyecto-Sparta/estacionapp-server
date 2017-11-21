@@ -20,7 +20,7 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
 
     layouts = [
       %{"id" => garage_layout_id, "floor_level" => 1, "parking_spaces" => [
-          %{"id" => space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied?" =>  true, "shape" => "square", "angle" => 0.0}
+          %{"id" => space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied" =>  true, "shape" => "square", "angle" => 0.0}
         ],
         "reservations" => [
           %{
@@ -39,7 +39,7 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
       }
     ]
 
-    assert json_response(response, :created) == %{"layouts" => layouts}
+    assert json_response(response, :ok) == %{"layouts" => layouts}
   end
 
   test "index returns unauthorized if jwt is invalid or not given" do

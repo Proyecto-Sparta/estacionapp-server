@@ -5,21 +5,7 @@ defmodule EstacionappServer.GarageView do
 
   def render("search.json", %{garages: garages}) do
     %{
-      garages: render_many(garages, __MODULE__, "garage.json")
-    }
-  end
-
-  def render("garage.json", %{garage: garage}) do
-    %{
-      id: garage.id,
-      email: garage.email,
-      name: garage.name,
-      distance: garage.distance,
-      layouts: render_many(garage.layouts, GarageLayoutView, "show.json", as: :garage_layout),
-      location: render_one(garage.location, __MODULE__, "location.json", as: :location),
-      pricing: render_one(garage.pricing, __MODULE__, "pricing.json", as: :pricing),
-      outline: render_many(garage.outline, __MODULE__, "outline.json", as: :outline),
-      amenities: render_many(garage.amenities, __MODULE__, "amenity.txt", as: :amenity)
+      garages: render_many(garages, __MODULE__, "show.json")
     }
   end
 

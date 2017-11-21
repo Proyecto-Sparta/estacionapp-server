@@ -26,10 +26,6 @@ defmodule EstacionappServer.GarageLayout do
       |> assoc_constraint(:garage)
   end
 
-  def valid_reservations do
-    from(r in Reservation, where: r.valid? == true, preload: :driver)
-  end  
-
   defmodule ParkingSpace do
     use EstacionappServer.Web, :model
 

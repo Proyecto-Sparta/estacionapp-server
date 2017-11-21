@@ -20,5 +20,9 @@ defmodule EstacionappServer.Reservation do
       |> validate_required(fields)
       |> assoc_constraint(:driver)
       |> assoc_constraint(:garage_layout)
-    end 
+  end 
+
+  def preload_valid_reservations do
+    [reservations: from(r in Reservation, where: r.valid? == true, preload: :driver)]
+  end  
 end 

@@ -1,7 +1,7 @@
 defmodule EstacionappServer.GarageController do
   use EstacionappServer.Web, :controller
      
-  alias EstacionappServer.{Garage, Utils}
+  alias EstacionappServer.{Garage, Utils, Reservation}
 
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:search, :update]
   plug Guardian.Plug.LoadResource when action in [:update]
@@ -20,7 +20,7 @@ defmodule EstacionappServer.GarageController do
     garage = %Garage{}
       |> Garage.changeset(params)
       |> Repo.insert!
-      |> Repo.preload([:amenities, :layouts])
+      |> preload_associations
       
     conn
       |> put_status(:ok)
@@ -36,7 +36,7 @@ defmodule EstacionappServer.GarageController do
       |> Guardian.Plug.current_resource
       |> Garage.changeset(params)
       |> Repo.update!
-      |> Repo.preload([:amenities, :layouts])
+      |> preload_associations
       
     conn
       |> put_status(:ok)
@@ -54,7 +54,7 @@ defmodule EstacionappServer.GarageController do
   def search(conn, params) do
     garages = params
       |> Garage.close_to
-      |> Repo.preload([:amenities, :layouts])   
+      |> preload_associations
 
     render(conn, "search.json", garages: garages)
   end
@@ -69,8 +69,12 @@ defmodule EstacionappServer.GarageController do
     
     conn
       |> put_authorization(garage)
-      |> render("show.json", garage:  Repo.preload(garage, [:amenities, :layouts]))
+      |> render("show.json", garage: preload_associations(garage))
   end  
+
+  defp preload_associations(garage) do
+    Repo.preload(garage, [:amenities, layouts: Reservation.preload_valid_reservations])
+  end
 
   defp sanitize_search_params(%{:params => params} = conn, _) do
     try do
