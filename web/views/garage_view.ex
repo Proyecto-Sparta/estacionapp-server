@@ -14,8 +14,9 @@ defmodule EstacionappServer.GarageView do
       id: garage.id,
       email: garage.email,
       name: garage.name,
-      location: render_one(garage.location, __MODULE__, "location.json", as: :location),
       distance: garage.distance,
+      layouts: render_many(garage.layouts, GarageLayoutView, "show.json", as: :garage_layout),
+      location: render_one(garage.location, __MODULE__, "location.json", as: :location),
       pricing: render_one(garage.pricing, __MODULE__, "pricing.json", as: :pricing),
       outline: render_many(garage.outline, __MODULE__, "outline.json", as: :outline),
       amenities: render_many(garage.amenities, __MODULE__, "amenity.txt", as: :amenity)
@@ -27,6 +28,7 @@ defmodule EstacionappServer.GarageView do
       id: garage.id,
       email: garage.email,
       name: garage.name,
+      distance: garage.distance,
       layouts: render_many(garage.layouts, GarageLayoutView, "show.json", as: :garage_layout),
       location: render_one(garage.location, __MODULE__, "location.json", as: :location),
       pricing: render_one(garage.pricing, __MODULE__, "pricing.json", as: :pricing),
@@ -50,7 +52,7 @@ defmodule EstacionappServer.GarageView do
       y: outline.y
     }
   end
-  
+
   def render("location.json", %{location: location}) do
     {long, lat} = location.coordinates
     [long, lat]
