@@ -35,7 +35,7 @@ defmodule EstacionappServer.Factory do
       %GarageLayout{
         floor_level: 1,
         parking_spaces: [
-          %{x: 0, y: 0, height: 10, width: 15, occupied?: true, shape: "square", angle: 0}
+          %{x: 0, y: 0, height: 10, width: 15, occupied: true, shape: "square", angle: 0}
         ]
       }
     end

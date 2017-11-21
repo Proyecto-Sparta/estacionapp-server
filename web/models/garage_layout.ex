@@ -5,7 +5,7 @@ defmodule EstacionappServer.GarageLayout do
 
   schema "garage_layouts" do
     field :floor_level, :integer
-    
+
     embeds_many :parking_spaces, GarageLayout.ParkingSpace, on_replace: :delete
     belongs_to :garage, Garage
 
@@ -27,7 +27,7 @@ defmodule EstacionappServer.GarageLayout do
 
   defmodule ParkingSpace do
     use EstacionappServer.Web, :model
-    
+
     embedded_schema do
       field :shape
       field :x, :float
@@ -35,11 +35,11 @@ defmodule EstacionappServer.GarageLayout do
       field :height, :float
       field :width, :float
       field :angle, :float
-      field :occupied?, :boolean, default: false
+      field :occupied, :boolean, default: false
     end
-  
+
     def changeset(struct, params \\ %{}) do
-      fields = [:x, :y, :height, :width, :occupied?, :angle, :shape]
+      fields = [:x, :y, :height, :width, :occupied, :angle, :shape]
       struct
         |> cast(params, fields)
         |> validate_required(fields)

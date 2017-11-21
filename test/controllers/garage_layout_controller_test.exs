@@ -8,12 +8,13 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
   end
 
   test "index returns all layouts of the current garage", jwt do
+    driver = insert(:driver)
     garage = Repo.one(Garage)
 
     %{:id => id, :parking_spaces => [space]} = insert(:garage_layout, garage_id: garage.id)
 
     response = build_conn()
-      |> put_req_header("authorization", jwt.token) 
+      |> put_req_header("authorization", jwt.token)
       |> get(garage_layout_path(@endpoint, :index))
 
     layouts = [
@@ -22,105 +23,105 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
         ]
       }
     ]
-    
+
     assert json_response(response, :created) == %{"layouts" => layouts}
   end
 
   test "index returns unauthorized if jwt is invalid or not given" do
     assert_error_sent :unauthorized, fn ->
-      build_conn() 
+      build_conn()
         |> get(garage_layout_path(@endpoint, :index))
     end
-  end    
+  end
 
-  test "update modifies the record and returns :ok", jwt do     
+  test "update modifies the record and returns :ok", jwt do
     garage = Repo.one(Garage)
-    layout = insert(:garage_layout, garage_id: garage.id) 
+    layout = insert(:garage_layout, garage_id: garage.id)
 
-    update_response = build_conn() 
-      |> put_req_header("authorization", jwt.token) 
-      |> patch(garage_layout_path(@endpoint, :update, layout.id), floor_level: 10)   
-    
+    update_response = build_conn()
+      |> put_req_header("authorization", jwt.token)
+      |> patch(garage_layout_path(@endpoint, :update, layout.id), floor_level: 10)
+
     modified_layout = Repo.one(GarageLayout)
     assert modified_layout.floor_level == 10
     assert response(update_response, 200) =~ ""
-  end    
+  end
 
   test "update with a non_existant id fails with :not_found", jwt do
-    assert_error_sent :not_found, fn ->    
-      build_conn() 
-        |> put_req_header("authorization", jwt.token) 
+    assert_error_sent :not_found, fn ->
+      build_conn()
+        |> put_req_header("authorization", jwt.token)
         |> patch(garage_layout_path(@endpoint, :update, 2))
     end
-  end    
+  end
 
   test "update on a foraneous layout fails with :not_found", jwt do
     garage = Repo.one(Garage)
     insert(:garage_layout, garage_id: garage.id)
 
-    assert_error_sent :not_found, fn ->    
-      build_conn() 
-        |> put_req_header("authorization", jwt.token) 
+    assert_error_sent :not_found, fn ->
+      build_conn()
+        |> put_req_header("authorization", jwt.token)
         |> patch(garage_layout_path(@endpoint, :update, 5000))
     end
-  end    
+  end
 
   test "create with wrong params returns :unprocessable_entity", jwt do
-    assert_error_sent :unprocessable_entity, fn ->    
-      build_conn() 
-        |> put_req_header("authorization", jwt.token) 
+    assert_error_sent :unprocessable_entity, fn ->
+      build_conn()
+        |> put_req_header("authorization", jwt.token)
         |> post(garage_layout_path(@endpoint, :create))
     end
-  end    
+  end
 
   test "create with wrong params returns changeset errors", jwt do
-    
-    {_, _, response} = assert_error_sent :unprocessable_entity, fn ->    
-      build_conn() 
-        |> put_req_header("authorization", jwt.token) 
+
+    {_, _, response} = assert_error_sent :unprocessable_entity, fn ->
+      build_conn()
+        |> put_req_header("authorization", jwt.token)
         |> post(garage_layout_path(@endpoint, :create))
     end
 
-    assert Poison.decode!(response) ==  %{"errors" => 
+    assert Poison.decode!(response) ==  %{"errors" =>
                                           %{"detail" => %{
-                                              "floor_level" => ["can't be blank"], 
+                                              "floor_level" => ["can't be blank"],
                                               "garage_id" => ["can't be blank"],
                                               "parking_spaces" => ["can't be blank"]}
                                           }
                                         }
-  end    
+  end
 
   test "create without authorization fails with :unauthorized" do
-    assert_error_sent :unauthorized, fn ->    
+    assert_error_sent :unauthorized, fn ->
       build_conn() |> post(garage_layout_path(@endpoint, :create))
     end
   end
 
   test "delete with wrong params returns changeset errors", jwt do
     garage = Repo.one(Garage)
-    layout = insert(:garage_layout, garage_id: garage.id)  
-    
-    delete_reponse = build_conn() 
-      |> put_req_header("authorization", jwt.token) 
+    layout = insert(:garage_layout, garage_id: garage.id)
+
+    delete_reponse = build_conn()
+      |> put_req_header("authorization", jwt.token)
       |> delete(garage_layout_path(@endpoint, :delete, layout.id))
 
-    assert response(delete_reponse, 200) =~ ""      
+    assert response(delete_reponse, 200) =~ ""
     assert Repo.aggregate(GarageLayout, :count, :id) == 0
-  end    
+  end
 
   test "delete on aforaneous layout fails with :not_found", jwt do
     garage = Repo.one(Garage)
     insert(:garage_layout, garage_id: garage.id)
 
-    assert_error_sent :not_found, fn ->    
-      build_conn() 
-        |> put_req_header("authorization", jwt.token) 
+    assert_error_sent :not_found, fn ->
+      build_conn()
+        |> put_req_header("authorization", jwt.token)
         |> delete(garage_layout_path(@endpoint, :delete, -10))
     end
   end
 
   test "delete without authorization fails with :unauthorized" do
-    assert_error_sent :unauthorized, fn ->    
+    assert_error_sent :unauthorized, fn ->
       build_conn() |> delete(garage_layout_path(@endpoint, :delete, 1))
     end
   end
