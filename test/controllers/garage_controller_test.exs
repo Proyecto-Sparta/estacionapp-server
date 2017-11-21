@@ -101,11 +101,62 @@ defmodule EstacionappServer.GarageControllerTest do
     end
   end
 
-
   describe "login" do
 
     test "returns :ok and the garage" do
       assert json_response(valid_garage_login(), :ok) |> renders_garage
+    end
+
+    test "returns :ok and a garage with a reservation" do
+      driver = insert(:driver)
+      garage = insert(:garage)
+      garage_layout = insert(:garage_layout, garage_id: garage.id)
+      [parking_space] = garage_layout.parking_spaces
+      reservation = insert(:reservation, garage_layout_id: garage_layout.id, driver_id: driver.id, parking_space_id: parking_space.id, valid: true)
+      
+      response = build_conn()
+        |> put_req_header("authorization", "Basic " <> Base.encode64("garageuser123:password"))
+        |> post(garage_path(@endpoint, :login))
+
+      layouts = [
+        %{"id" => garage_layout.id, "floor_level" => 1, "parking_spaces" => [
+            %{"id" => parking_space.id, "x" => 0.0, "y" => 0.0, "height" =>  10.0, "width" => 15.0, "occupied" =>  true, "shape" => "square", "angle" => 0.0}
+          ],
+          "reservations" => [
+            %{
+              "driver" => %{
+                "id" => driver.id,
+                "email" => driver.email,
+                "full_name" => driver.full_name,
+                "vehicle" => %{
+                  "type" => "car",
+                  "plate" => "ELX-RLZ"
+                }
+              },
+              "id" => reservation.id
+            }
+          ]
+        }
+      ]
+
+      assert json_response(response, :ok) == %{ "id" => garage.id,
+                                                "name" => "Torcuato Parking",
+                                                "email" => "tparking@gmail.com",
+                                                "distance" => nil,
+                                                "location" => [-58.622210, -34.480666],
+                                                "pricing" => %{
+                                                  "id" => garage.pricing.id,
+                                                  "car" => 15,
+                                                  "bike" => 23,
+                                                  "pickup" => 88
+                                                },
+                                                "outline" => [
+                                                  %{"x" => 0.0, "y" => 0.0},
+                                                  %{"x" => 1.0, "y" => 1.0}
+                                                ],
+                                                "amenities" => [],
+                                                "layouts" => layouts
+                                              }
     end
 
     test "returns a jwt token in the header" do
