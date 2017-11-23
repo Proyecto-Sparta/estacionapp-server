@@ -120,5 +120,5 @@ second_floor = [
   %{ x: 147, y: 60, width: 40, height: 40, occupied: false, shape: "square", angle: 0 }
 ]
 
-Seeds.insert_garage_layout(8, 1, first_floor)
-Seeds.insert_garage_layout(8, 2, second_floor)
+Seeds.insert_garage_layout(9, 1, first_floor)
+Seeds.insert_garage_layout(9, 2, second_floor)
