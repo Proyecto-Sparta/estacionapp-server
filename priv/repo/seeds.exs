@@ -104,7 +104,9 @@ Seeds.insert_garage("Aparcamientos PROJECT", [-34.600359, -58.422099], %{bike: 1
 
 ##Garage
 #Franco
-Seeds.insert_garage("Mumuki aparcaderos", [-34.603168, -58.421574], %{bike: 10, car: 40, pickup: 70}, general_outline, [1, 2, 3, 6, 7])
+franco_outline = [%{x: 124, y: 40 }, %{x: 127, y: 285}, %{x: 526, y: 285}, %{x: 525, y: 42}]
+
+Seeds.insert_garage("Mumuki aparcaderos", [-34.603168, -58.421574], %{bike: 10, car: 40, pickup: 70}, franco_outline, [1, 2, 3, 6, 7])
 
 first_floor = [
   %{ x: 183, y: 123, width: 40, height: 40, occupied: true, shape: "square", angle: 0 },
