@@ -102,6 +102,10 @@ Seeds.insert_garage("DISI parking", [-34.599137, -58.420287], %{bike: 0, car: 50
 #G3
 Seeds.insert_garage("Aparcamientos PROJECT", [-34.600359, -58.422099], %{bike: 15, car: 30, pickup: 80}, general_outline, [1, 2, 3, 8])
 
+Seeds.insert_garage_layout(9, 1, general_parking_spaces)
+Seeds.insert_garage_layout(10, 1, general_parking_spaces)
+Seeds.insert_garage_layout(11, 1, general_parking_spaces)
+
 ##Garage
 #Franco
 franco_outline = [%{x: 124, y: 40 }, %{x: 127, y: 285}, %{x: 526, y: 285}, %{x: 525, y: 42}]
