@@ -33,7 +33,8 @@ defmodule EstacionappServer.GarageLayoutControllerTest do
                 "plate" => "ELX-RLZ"
               }
             },
-            "id" => reservation.id
+            "id" => reservation.id,
+            "parking_space_id" => space.id
           }
         ]
       }
