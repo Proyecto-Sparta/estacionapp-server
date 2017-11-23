@@ -65,6 +65,13 @@ defmodule EstacionappServer.Garage do
       select_merge: %{distance: st_distance_spheroid(^location, garage.location)}
   end
 
+  defp put_amenities(changeset, %{"amenities" => amenities}) when is_list(amenities) do
+    build_amenities = fn amenity_id -> Repo.get!(Amenity, amenity_id) end
+    amenities
+      |> Enum.map(build_amenities)
+      |> (& put_assoc(changeset, :amenities, &1)).()
+  end
+
   defp put_amenities(changeset, %{amenities: amenities}) when is_list(amenities) do
     build_amenities = fn amenity_id -> Repo.get!(Amenity, amenity_id) end
     amenities

@@ -34,6 +34,7 @@ defmodule EstacionappServer.GarageController do
   def update(conn, params) do
     updated_garage = conn
       |> Guardian.Plug.current_resource
+      |> Repo.preload(:amenities)
       |> Garage.changeset(params)
       |> Repo.update!
       |> preload_associations
